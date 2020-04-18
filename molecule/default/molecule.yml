@@ -4,11 +4,6 @@
 dependency:
   name: galaxy
 
-dependency:
-  name: shell
-  command: 'molecule/default/network.sh'
-  enabled: false
-
 driver:
   name: docker
 
@@ -16,8 +11,8 @@ lint: |
   set -e
   ! grep -r "no_log: false" .
   yamllint .
-  ansible-lint -v
-  ansible-lint roles/*/vars/*.yml
+  ansible-lint -v roles/* molecule/default/converge.yml molecule/default/verify.yml galaxy.yml
+  ansible-lint -v roles/*/vars/*.yml
   flake8 -v
 
 platforms:

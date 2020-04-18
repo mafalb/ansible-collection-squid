@@ -5,8 +5,18 @@
   hosts: t_client
   tasks:
 
+  - name: request without proxy - start
+    command: curl -sv -x '' https://www.google.at
+    args:
+      warn: false
+    changed_when: false
+    register: _async_request
+    async: 300
+    poll: 0
+
   - name: request through squid is working
     command: curl -sv -x {{ groups['server'][0] }}:3128 https://www.google.at
+    changed_when: false
     args:
       warn: false
 
@@ -17,14 +27,43 @@
     environment:
       https_proxy: "{{ groups['server'][0] }}:3128"
 
+  - debug: var=_async_request
+
+  - name: request without proxy - wait for timeout
+    delegate_to: t_client
+    async_status:
+      jid: "{{ _async_request.ansible_job_id }}"
+    register: _result
+    until: _result.finished
+    retries: 10
+    failed_when: false
+
+  - debug: var=_result
+
+  - name: request without proxy - failed
+    assert:
+      that:
+      - _result.rc != 0
+
 - name: Verify
   hosts: all,!t_client
 
   tasks:
 
+  - name: request without proxy - failed
+    delegate_to: t_client
+    command: curl -sv -x '' https://www.google.at/
+    args:
+      warn: false
+    register: _async_request
+    changed_when: false
+    async: 300
+    poll: 0
+
   - name: request through squid is working
     delegate_to: t_client
     command: curl -sv -x {{ inventory_hostname }}:3128 https://www.google.at/gugu
+    changed_when: false
     args:
       warn: false
 
@@ -34,5 +73,23 @@
       dest: /dev/null
     environment:
       https_proxy: "{{ inventory_hostname }}:3128"
+
+  - debug: var=_async_request
+
+  - name: request without proxy - wait for timeout
+    delegate_to: t_client
+    async_status:
+      jid: "{{ _async_request.ansible_job_id }}"
+    register: _result
+    until: _result.finished
+    retries: 10
+    failed_when: false
+
+  - debug: var=_result
+
+  - name: request without proxy - failed
+    assert:
+      that:
+      - _result.rc != 0
 
 ...
