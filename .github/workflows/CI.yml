@@ -45,7 +45,7 @@ jobs:
       - name: checkout collection
         uses: actions/checkout@v1
         with:
-          path: ansible_collections/mafalb/mariadb
+          path: ansible_collections/mafalb/squid
 
       - name: checkout collection
         if: false
