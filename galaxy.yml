@@ -1,0 +1,27 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+namespace: mafalb 
+name: squid
+version: 0.0.1
+readme: README.md
+
+authors: []
+
+description: Ansible collection for squid
+
+license:
+- GPL-3.0-or-later
+
+tags:
+- squid
+- proxy
+
+dependencies: {}
+
+repository: https://github.com/mafalb/ansible-collection-squid
+documentation: https://github.com/mafalb/ansible-collection-squid
+homepage: https://github.com/mafalb/ansible-collection-squid
+issues: https://github.com/mafalb/ansible-collection-squid/issues
+
+...

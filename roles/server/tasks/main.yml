@@ -1,0 +1,15 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: squid is installed
+  package:
+    name: squid
+
+- name: squid is running
+  service:
+    name: squid
+    state: started
+    enabled: true
+  register: _squid_was_started
+
+...

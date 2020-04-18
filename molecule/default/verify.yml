@@ -1,0 +1,38 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: Verify
+  hosts: t_client
+  tasks:
+
+  - name: request through squid is working
+    command: curl -sv -x {{ groups['server'][0] }}:3128 https://www.google.at
+    args:
+      warn: false
+
+  - name: request through squid is working
+    get_url:
+      url: https://www.google.at/
+      dest: /dev/null
+    environment:
+      https_proxy: "{{ groups['server'][0] }}:3128"
+
+- name: Verify
+  hosts: all,!t_client
+
+  tasks:
+
+  - name: request through squid is working
+    delegate_to: t_client
+    command: curl -sv -x {{ inventory_hostname }}:3128 https://www.google.at/gugu
+    args:
+      warn: false
+
+  - name: request through squid is working
+    get_url:
+      url: https://www.google.at/
+      dest: /dev/null
+    environment:
+      https_proxy: "{{ inventory_hostname }}:3128"
+
+...
