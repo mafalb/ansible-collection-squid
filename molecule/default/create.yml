@@ -99,6 +99,7 @@
         key_path: "{{ item.key_path | default((lookup('env', 'DOCKER_CERT_PATH') + '/key.pem') if lookup('env', 'DOCKER_CERT_PATH') else omit) }}"
         tls_verify: "{{ item.tls_verify | default(lookup('env', 'DOCKER_TLS_VERIFY')) or false }}"
         labels: "{{ molecule_labels | combine(item.labels | default({})) }}"
+        internal: "{{ true if item == 'molecule-internal' else omit }}"
         state: present
       with_items: "{{ molecule_yml.platforms | molecule_get_docker_networks }}"
       loop_control:
