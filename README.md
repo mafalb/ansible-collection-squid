@@ -5,11 +5,11 @@
 |master|![master branch](https://github.com/mafalb/ansible-collection-squid/workflows/CI/badge.svg?branch=master)|
 |dev|![dev branch](https://github.com/mafalb/ansible-collection-squid/workflows/CI/badge.svg?branch=dev)|
 
-A collection for squid related things.
+A collection for squid. Currently it is very limited, I use it for CI only.
 
 ## Roles
 
-### [mafalb.squid.squid](roles/squid/README.md)
+### [mafalb.squid.server](roles/server/README.md)
 
 ## License
 

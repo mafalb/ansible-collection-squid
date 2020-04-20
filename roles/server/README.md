@@ -1,18 +1,14 @@
-# Ansible Role - server
+# Ansible Role - mafalb.squid.server
 
-|---|---|
-|master|![master branch](https://github.com/mafalb.squid/ansible-role-server/workflows/CI/badge.svg?branch=master)|
-|dev|![dev branch](https://github.com/mafalb.squid/ansible-role-server/workflows/CI/badge.svg?branch=dev)|
-
-bla
+Run a very basic squid server with default config. I use it for CI.
 
 ## Basic Usage
 
 ```yaml
-- name: install server
+- name: install squid
   hosts: localhost
   roles:
-  - role: server
+  - role: mafalb.squid.server
 ```
 
 ## Variables
@@ -20,4 +16,3 @@ bla
 ## License
 
 GPLv3
-
