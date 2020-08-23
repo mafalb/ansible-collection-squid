@@ -1,0 +1,17 @@
+# vim: set ft=yaml ts=2 expandtab
+# 
+# It is not possible to specify the internal: option in molecule.yml
+# precreate the internal network here
+#
+---
+
+- hosts: localhost
+  tasks:
+  - name: Create private docker network
+    docker_network:
+      name: molecule-internal
+      internal: true
+      labels:
+        owner: molecule
+
+...
