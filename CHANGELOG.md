@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.4 XXXX-XX-XX
+
+### Changed in CI
+
+- use actions/checkout@v2
+- use default working-dir in run steps
+
 ## 0.0.3 2020-08-22
 
 ### Added
