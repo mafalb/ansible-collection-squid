@@ -28,6 +28,7 @@ jobs:
         ansible_version:
         - '2.10'
         - '2.9'
+
         include:
 
         - target: centos7
@@ -56,7 +57,7 @@ jobs:
           path: ansible_collections/mafalb/squid
 
       - name: update apt cache
-        run: sudo apt-cache update
+        run: sudo apt-get update
 
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
