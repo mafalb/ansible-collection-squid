@@ -6,6 +6,7 @@
 
 - use actions/checkout@v2
 - use default working-dir in run steps
+- check against ansible 2.10 and ansible 2.9
 
 ## 0.0.3 2020-08-22
 

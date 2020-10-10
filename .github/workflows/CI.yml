@@ -25,6 +25,9 @@ jobs:
         - centos7
         - centos8
 
+        ansible_version:
+        - '2.10'
+        - '2.9'
         include:
 
         - target: centos7
@@ -36,6 +39,7 @@ jobs:
           tag: 8
 
     env:
+      ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
       CI_CONTAINER_PRIVILEGED: true
@@ -51,11 +55,14 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
+      - name: update apt cache
+        run: sudo apt-cache update
+
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
 
       - name: install molecule
-        run: ansible-playbook -D molecule/install_molecule.yml
+        run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=$ANSIBLE_VERSION
 
       - name: run molecule tests
         run: |
