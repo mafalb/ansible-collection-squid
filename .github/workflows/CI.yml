@@ -63,13 +63,6 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
-      - name: checkout collection
-        uses: actions/checkout@v2
-        with:
-          repository: mafalb/ansible-collection-ansible
-          path: ansible_collections/mafalb/ansible
-          ref: dev
-
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
 
