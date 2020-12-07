@@ -2,4 +2,10 @@
 ---
 
 collections:
-- name: mafalb.ansible
+
+- name: https://github.com/mafalb/ansible-collection-ansible.git
+  type: git
+  version: dev
+
+#- name: mafalb.ansible
+
