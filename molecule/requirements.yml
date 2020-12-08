@@ -2,4 +2,12 @@
 ---
 
 collections:
+
+# does only work with ansible 2.10
+#- name: https://github.com/mafalb/ansible-collection-ansible.git
+#  type: git
+#  version: dev
+
 - name: mafalb.ansible
+
+...

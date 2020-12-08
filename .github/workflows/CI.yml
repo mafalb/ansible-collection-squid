@@ -63,9 +63,6 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
-      - name: update apt cache
-        run: sudo apt-get update
-
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
 
