@@ -29,6 +29,7 @@ jobs:
         target:
         - centos7
         - centos8
+        - ubuntu-20.04
 
         ansible_version:
         - '2.10'
@@ -44,11 +45,15 @@ jobs:
           image: centos
           tag: 8
 
+        - target: ubuntu-20.04
+          distribution: ubuntu
+          version: focal
+
+
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
-      CI_CONTAINER_PRIVILEGED: true
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
@@ -63,8 +68,8 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
-      - name: install dependencies
-        run: ansible-galaxy collection install -r molecule/requirements.yml
+      - name: get mafalb.ansible
+        run: ansible-galaxy collection install mafalb.ansible
 
       - name: install molecule
         run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
