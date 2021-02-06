@@ -23,6 +23,8 @@
   package:
     name: squid
 
+- debug: var=squid_cfg_template
+
 - name: squid is configured
   template:
     src: "{{ squid_cfg_template }}"

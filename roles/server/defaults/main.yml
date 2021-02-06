@@ -22,4 +22,46 @@
 squid_state: present
 squid_cfg_template: mafalb.squid.server.conf.j2
 
+squid_cfg:
+
+  ACLs:
+
+    localnet:
+      acltype: src
+      ACEs:
+      - comment: 'RFC 1122 "this" network (LAN)'
+        value: 0.0.0.1-0.255.255.255
+      - comment: RFC 1918 local private network (LAN)
+        value: 10.0.0.0/8
+      - comment: RFC 6598 shared address space (CGN)
+        value: 100.64.0.0/10
+      - comment: RFC 3927 link-local (directly plugged) machines
+        value: 169.254.0.0/16
+      - comment: RFC 1918 local private network (LAN)
+        value: 172.16.0.0/12
+      - comment: RFC 1918 local private network (LAN)
+        value: 192.168.0.0/16
+      - comment: RFC 4193 local private network range
+        value: fc00::/7
+      - comment: RFC 4291 link-local (directly plugged) machines
+        value: fe80::/10
+
+    SSL_ports:
+      acltype: port
+      ACEs:
+      - value: 443
+
+    Safe_ports:
+      acltype: port
+      ACEs:
+      - value: 80
+        comment: http
+      - value: 443
+        comment: https
+
+    CONNECT:
+      acltype: method
+      ACEs:
+      - value: CONNECT
+
 ...
