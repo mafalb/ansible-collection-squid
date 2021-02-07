@@ -24,7 +24,7 @@ squid_cfg_template: mafalb.squid.server.conf.j2
 
 squid_cfg:
 
-  ACLs:
+  acl:
 
     localnet:
       acltype: src
@@ -63,5 +63,68 @@ squid_cfg:
       acltype: method
       ACEs:
       - value: CONNECT
+
+  http_access:
+
+  - comment: Deny requests to certain unsafe ports
+    action: deny
+    aclname: "!Safe_Ports"
+
+  - comment: Deny CONNECT to other than secure SSL ports
+    action: deny
+    aclname: CONNECT !SSL_ports
+
+  - comment: Only allow cachemgr access from localhost
+    action: allow
+    aclname: localhost manager
+
+  - action: deny
+    aclname: manager
+
+  - action: deny
+    aclname: to_localhost
+
+  - action: allow
+    aclname: localhost
+
+  - action: allow
+    aclname: localnet
+
+  - comment: And finally deny all other access to this proxy
+    action: deny
+    aclname: all
+
+  options:
+
+  - comment: Squid normally listens to port 3128
+    option: http_port
+    value: 3128
+
+  - comment: Leave coredumps in the first cache dir
+    option: coredump_dir
+    value: "{{ squid_spool_dir }}"
+
+  refresh_pattern:
+
+  - regex: ^ftp
+    min: 1440
+    percent: 20
+    max: 10080
+    
+  - regex: ^gopher
+    min: 1440
+    percent: 0
+    max: 1440
+
+  - case_insensitive: true
+    regex: (/cgi-bin/|\?)
+    min: 0
+    percent: 0
+    max: 0
+
+  - regex: .
+    min: 0
+    percent: 20
+    max: 4320
 
 ...

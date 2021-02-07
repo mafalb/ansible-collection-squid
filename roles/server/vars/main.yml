@@ -19,37 +19,6 @@
 
 ---
 
-- name: squid is present
-  package:
-    name: squid
-
-- debug: var=squid_cfg_template
-  tags:
-  - never
-  - debug
-
-- name: check config
-  assert:
-    that:
-    - squid_cfg.acl is defined
-    - squid_cfg.http_access is defined
-    - squid_cfg.options is defined
-    - squid_cfg.refresh_pattern is defined
-
-- name: squid is configured
-  template:
-    src: "{{ squid_cfg_template }}"
-    dest: /etc/squid/squid.conf
-    mode: '644'
-    backup: true
-    validate: squid -k parse -f %s
-  notify: reload squid
-
-- name: squid is running
-  service:
-    name: squid
-    state: started
-    enabled: true
-  register: _squid_has_started
+squid_spool_dir: /var/spool/squid
 
 ...
