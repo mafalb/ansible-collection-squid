@@ -1,51 +1,53 @@
-{% macro acl_directive(acl) %}
-{% for ace in acl.value.ACEs %}
-acl {{ acl.key }} {{ acl.value.acltype }} {{ ace.value }}{% if ace.comment is defined %} {{ '#'|indent(22-(ace.value|string|length),true) }} {{ ace.comment }}{% endif %}
+{#
+# This file is part of ansible-collection-squid
+# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
+#
+# ansible-collection-squid is free software: you can redistribute it 
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# ansible-collection-squid is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ansible-collection-squid.
+# If not, see <https://www.gnu.org/licenses/>.
+-#}
 
-{% endfor %}
-{% endmacro -%}
-
-{% macro http_access_directive(rule) %}
-http_access {{ rule.action }} {{ rule.aclname }}{% if rule.comment is defined %} {{ '#'|indent(22-(rule.aclname|string|length),true) }} {{ rule.comment }}{% endif %}
-{% endmacro -%}
-
-{% macro option_directive(option) %}
-{% if option.comment is defined %}# {{ option.comment }}{% endif %}
-
-{{ option.option }} {{ option.value }}
-{% endmacro -%}
-
-{% macro refresh_pattern_directive(pattern) %}
-refresh_pattern {% if pattern.case_insensitive|default(false)|bool -%}-i {% endif %}{{ pattern.regex }} {{ pattern.min }} {{ pattern.percent }}% {{ pattern.max -}}
-{% endmacro -%}
+{% import 'mafalb.squid.macros.j2' as squid_macros -%}
 
 # {{ ansible_managed }}
-#
-# Recommended minimum configuration:
-#
 
-# Example rule allowing access from your local networks.
+{% block ACLs %}
+# Rule allowing access from your local networks.
 # Adapt to list your (internal) IP networks from where browsing
 # should be allowed
 {% for acl in squid_cfg.acl|dict2items %}
-{{ acl_directive(acl) }}
+{{ squid_macros.acl(acl) }}
 {% endfor %}
 
 #
 # Access Permission configuration:
 #
 {% for rule in squid_cfg.http_access %}
-{{ http_access_directive(rule) }}
+{{ squid_macros.http_access_directive(rule) }}
 {% endfor %}
+{% endblock %}
 
-
+{% block Options %}
 {% for option in squid_cfg.options %}
-{{ option_directive(option) }}
+{{ squid_macros.option(option) }}
 {% endfor %}
+{% endblock %}
 
+{% block Refresh_Patterns %}
 #
 # Add any of your own refresh_pattern entries above these.
 #
 {% for pattern in squid_cfg.refresh_pattern %}
-{{ refresh_pattern_directive(pattern) }}
+{{ squid_macros.refresh_pattern_directive(pattern) }}
 {% endfor %}
+{% endblock %}

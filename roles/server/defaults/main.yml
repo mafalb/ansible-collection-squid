@@ -97,11 +97,11 @@ squid_cfg:
   options:
 
   - comment: Squid normally listens to port 3128
-    option: http_port
+    name: http_port
     value: 3128
 
   - comment: Leave coredumps in the first cache dir
-    option: coredump_dir
+    name: coredump_dir
     value: "{{ squid_spool_dir }}"
 
   refresh_pattern:
