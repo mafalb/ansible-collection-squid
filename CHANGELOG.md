@@ -1,7 +1,8 @@
 # Changelog
 
-## 0.0.4 XXXX-XX-XX
+## 0.1.0 XXXX-XX-XX
 
+- configure squid via squid_cfg dictionary
 - improvements to CI
 
 ## 0.0.3 2020-12-07
