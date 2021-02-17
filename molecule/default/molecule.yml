@@ -58,7 +58,7 @@ platforms:
   groups:
   - server
 
-- name: t_client
+- name: ci-client
   image: centos:7
   command: /lib/systemd/systemd
   docker_networks:

@@ -20,7 +20,7 @@
 ---
 
 - name: Verify
-  hosts: t_client
+  hosts: ci-client
   tasks:
 
   - name: request without proxy - start
@@ -48,7 +48,7 @@
   - debug: var=_async_request
 
   - name: request without proxy - wait for timeout
-    delegate_to: t_client
+    delegate_to: ci-client
     async_status:
       jid: "{{ _async_request.ansible_job_id }}"
     register: _result
@@ -64,12 +64,12 @@
       - _result.rc != 0
 
 - name: Verify
-  hosts: all,!t_client
+  hosts: all,!ci-client
 
   tasks:
 
   - name: request without proxy - failed
-    delegate_to: t_client
+    delegate_to: ci-client
     command: curl -sv -x '' https://www.google.at/
     args:
       warn: false
@@ -79,7 +79,7 @@
     poll: 0
 
   - name: request through squid is working
-    delegate_to: t_client
+    delegate_to: ci-client
     command: curl -sv -x {{ inventory_hostname }}:3128 https://www.google.at/gugu
     changed_when: false
     args:
@@ -95,7 +95,7 @@
   - debug: var=_async_request
 
   - name: request without proxy - wait for timeout
-    delegate_to: t_client
+    delegate_to: ci-client
     async_status:
       jid: "{{ _async_request.ansible_job_id }}"
     register: _result

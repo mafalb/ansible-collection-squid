@@ -19,9 +19,14 @@
 
 ---
 
-- name: Converge
-  hosts: all,!ci-client
-  roles:
-  - role: mafalb.squid.server
+import_playbook: ../default/verify.yml
+
+- name: Verify
+  hosts: ci-client
+  tasks:
+
+  - name: 
+    command: grep '# ci with custom template' /etc/squid/squid.conf
+    changed_when: false
 
 ...

@@ -20,8 +20,9 @@
 ---
 
 - name: Converge
-  hosts: all,!ci-client
+  hosts: all,!t_client
   roles:
   - role: mafalb.squid.server
+    squid_cfg_template: squid.cfg.j2
 
 ...
