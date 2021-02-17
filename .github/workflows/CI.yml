@@ -29,6 +29,8 @@ jobs:
         target:
         - centos7
         - centos8
+        - centosstream8
+        - ubuntu-18.04
         - ubuntu-20.04
 
         ansible_version:
@@ -45,6 +47,15 @@ jobs:
           image: centos
           tag: 8
 
+        - target: centosstream8
+          distribution: centos
+          registry: "quay.io/centos/"
+          version: stream8
+
+        - target: ubuntu-18.04
+          distribution: ubuntu
+          version: bionic
+
         - target: ubuntu-20.04
           distribution: ubuntu
           version: focal
@@ -54,6 +65,7 @@ jobs:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
+      CI_REGISTRY: ${{ matrix.registry }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 

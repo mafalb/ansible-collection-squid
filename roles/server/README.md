@@ -1,35 +1,78 @@
 # Ansible Role - mafalb.squid.server
 
-Run a very basic squid server with default config. I use it for CI.
+Installs squid. Tested with
+
+- CentOS 7
+- CentOS 8
+- CentOS Stream 8
+- Ubuntu 18.04 (bionic)
+- Ubuntu 20.04 (focal)
 
 ## Basic Usage
 
-```yaml
-- name: install squid
-  hosts: localhost
-  roles:
-  - role: mafalb.squid.server
-```
-
-This role comes with a default configuration which might be good enough for some simple use cases, but probably you want to supply your own configuration.
-
-1. Write your own template
-
+You can provide your own template for squid.conf
 
 ```yaml
 - name: install squid
   hosts: localhost
   roles:
   - role: mafalb.squid.server
-    squid_template: path_to_your_squid_conf_template
+    squid_template: path_to_squid.conf.j2
 ```
 
-2. Use the abstraction built into the default template
+or you can use the default template and provide squid_cfg dictionary. squid_cfg will be merged with the default config. Have a look at [squid_default_cfg](vars/main.yml)
 
-3. Extend the default template
+```yaml
+- name: install squid
+  hosts: localhost
+  roles:
+  - role: mafalb.squid.server
+    squid_cfg:
+      acl:
+        myhosts:
+        - src 127.0.0.1
+        - src 192.168.0.10
+      http_access:
+      - allow myhosts
+      - deny all
+```
 
 ## Variables
 
+---
+
+### squid_state
+
+specify absent to get rid of squid
+
+```yaml
+squid_state: present  # present|absent
+```
+
+---
+
+### squid_cfg_template
+
+Specify your own template for squid.conf instead of the default
+
+```yaml
+squid_cfg_template: squid.conf.j2   
+```
+
+---
+
+### squid_cfg
+
+The default template for squid.conf uses squid_cfg to hold the configuration
+
+```yaml
+squid_cfg: { ... }
+```
+
+---
+
 ## License
 
-GPLv3
+Copyright (c) 2020,2021 Markus Falb <markus.falb@mafalb.at>
+
+GPL-3.0-or-later

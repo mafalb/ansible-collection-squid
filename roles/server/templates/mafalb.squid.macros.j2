@@ -17,24 +17,13 @@
 # If not, see <https://www.gnu.org/licenses/>.
 -#}
 
-{% macro acl(acl) %}
-{% for ace in acl.value.ACEs %}
-acl {{ acl.key }} {{ acl.value.acltype }} {{ ace.value }}{% if ace.comment is defined %} {{ '#'|indent(22-(ace.value|string|length),true) }} {{ ace.comment }}{% endif %}
+{%- macro directive(key, value) %}
+{% if value|type_debug == 'list' %}
 
-{% endfor %}
+{% for v in value -%}
+{{ key }} {{ v }}
+{% endfor -%}
+{% else -%}
+{{ key }} {{ value }}
+{%- endif -%}
 {% endmacro -%}
-
-{% macro http_access_directive(rule) %}
-http_access {{ rule.action }} {{ rule.aclname }}{% if rule.comment is defined %} {{ '#'|indent(22-(rule.aclname|string|length),true) }} {{ rule.comment }}{% endif %}
-{% endmacro -%}
-
-{% macro option(option) %}
-{% if option.comment is defined %}# {{ option.comment }}{% endif %}
-
-{{ option.name }} {{ option.value }}
-{% endmacro -%}
-
-{% macro refresh_pattern_directive(pattern) %}
-refresh_pattern {% if pattern.case_insensitive|default(false)|bool -%}-i {% endif %}{{ pattern.regex }} {{ pattern.min }} {{ pattern.percent }}% {{ pattern.max -}}
-{% endmacro -%}
-

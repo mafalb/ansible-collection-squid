@@ -21,33 +21,14 @@
 
 # {{ ansible_managed }}
 
-{% block ACLs %}
-# Rule allowing access from your local networks.
-# Adapt to list your (internal) IP networks from where browsing
-# should be allowed
-{% for acl in squid_cfg.acl|dict2items %}
-{{ squid_macros.acl(acl) }}
-{% endfor %}
-
-#
-# Access Permission configuration:
-#
-{% for rule in squid_cfg.http_access %}
-{{ squid_macros.http_access_directive(rule) }}
-{% endfor %}
-{% endblock %}
-
-{% block Options %}
-{% for option in squid_cfg.options %}
-{{ squid_macros.option(option) }}
-{% endfor %}
-{% endblock %}
-
-{% block Refresh_Patterns %}
-#
-# Add any of your own refresh_pattern entries above these.
-#
-{% for pattern in squid_cfg.refresh_pattern %}
-{{ squid_macros.refresh_pattern_directive(pattern) }}
-{% endfor %}
+{% block new %}
+{% for directive in squid.cfg|dict2items -%}
+{% if directive.key == 'acl' -%}
+{% for acl in directive.value|dict2items -%}
+{{ squid_macros.directive(directive.key + " " + acl.key, acl.value) }}
+{% endfor -%}
+{% else -%}
+{{ squid_macros.directive(directive.key, directive.value) }}
+{% endif -%}
+{% endfor -%}
 {% endblock %}

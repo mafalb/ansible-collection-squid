@@ -31,10 +31,9 @@
 - name: check config
   assert:
     that:
-    - squid_cfg.acl is defined
-    - squid_cfg.http_access is defined
-    - squid_cfg.options is defined
-    - squid_cfg.refresh_pattern is defined
+    - squid.cfg.acl is defined
+    - squid.cfg.http_access is defined
+    - squid.cfg|type_debug == 'dict'
 
 - name: squid is configured
   template:
