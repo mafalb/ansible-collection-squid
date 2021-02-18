@@ -5,8 +5,12 @@ Installs squid. Tested with
 - CentOS 7
 - CentOS 8
 - CentOS Stream 8
+- Fedora 32
+- Fedora 33
 - Ubuntu 18.04 (bionic)
 - Ubuntu 20.04 (focal)
+- Debian 9 (stretch)
+- Debian 10 (buster)
 
 ## Basic Usage
 

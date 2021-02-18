@@ -5,7 +5,7 @@
 |master|![master branch](https://github.com/mafalb/ansible-collection-squid/workflows/CI/badge.svg?branch=master)|
 |dev|![dev branch](https://github.com/mafalb/ansible-collection-squid/workflows/CI/badge.svg?branch=dev)|
 
-A collection for squid. Currently it is very limited, I use it for CI only.
+An ansible collection for squid.
 
 ## Roles
 
@@ -13,4 +13,6 @@ A collection for squid. Currently it is very limited, I use it for CI only.
 
 ## License
 
-GPLv3
+Copyright (c) 2020,2021 Markus Falb <markus.falb@mafalb.at>
+
+GPL-3.0-or-later
