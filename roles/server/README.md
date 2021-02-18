@@ -17,10 +17,12 @@ You can provide your own template for squid.conf
   hosts: localhost
   roles:
   - role: mafalb.squid.server
-    squid_template: path_to_squid.conf.j2
+    squid_cfg_template: path_to_squid.conf.j2
 ```
 
-or you can use the default template and provide squid_cfg dictionary. squid_cfg will be merged with the default config. Have a look at [squid_default_cfg](vars/main.yml)
+With the default template the whole squid configuration can be written as yaml in the squid_cfg dictionary. squid_cfg will be merged with [squid_default_cfg](vars/main.yml).
+
+What follows is just a minimum example to demonstrate the concept. Have a look at [squid_default_cfg](vars/main.yml) and of course the squid documentation for the [recommended minimum acl](http://www.squid-cache.org/Doc/config/acl/). In other words: do not use this in production.
 
 ```yaml
 - name: install squid
