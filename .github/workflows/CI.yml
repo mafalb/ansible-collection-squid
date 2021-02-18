@@ -32,6 +32,11 @@ jobs:
         - centosstream8
         - ubuntu-18.04
         - ubuntu-20.04
+        - fedora32
+        - fedora33
+        - debian9
+        - debian10
+
 
         ansible_version:
         - '2.10'
@@ -59,6 +64,22 @@ jobs:
         - target: ubuntu-20.04
           distribution: ubuntu
           version: focal
+
+        - target: fedora32
+          distribution: fedora
+          version: 32
+
+        - target: fedora33
+          distribution: fedora
+          version: 33
+
+        - target: debian9
+          distribution: debian
+          version: stretch
+
+        - target: debian10
+          distribution: debian
+          version: buster
 
 
     env:
