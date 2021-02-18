@@ -101,7 +101,7 @@ jobs:
           source ~/.virtualenvs/molecule/bin/activate
           molecule test -s custom_template
 
-      - name: molecule custom_template scenario
+      - name: molecule squid_cfg scenario
         run: |
           source ~/.virtualenvs/molecule/bin/activate
           molecule test -s squid_cfg
