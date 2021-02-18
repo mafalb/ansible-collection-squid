@@ -34,6 +34,6 @@
       http_access:
       - allow myhosts
       - deny all
-      shutdown_lifetime: 30 # that i have something to grep in CI
+      shutdown_lifetime: 30 seconds # that i have something to grep in CI
 
 ...
