@@ -1,0 +1,35 @@
+{#
+# This file is part of ansible-collection-squid
+# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
+#
+# ansible-collection-squid is free software: you can redistribute it 
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# ansible-collection-squid is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ansible-collection-squid.
+# If not, see <https://www.gnu.org/licenses/>.
+-#}
+
+{% import 'mafalb.squid.macros.j2' as squid_macros -%}
+
+# {{ ansible_managed }}
+# grep me
+
+{% block new %}
+{% for directive in squid.cfg|dict2items -%}
+{% if directive.key == 'acl' -%}
+{% for acl in directive.value|dict2items -%}
+{{ squid_macros.directive(directive.key + " " + acl.key, acl.value) }}
+{% endfor -%}
+{% else -%}
+{{ squid_macros.directive(directive.key, directive.value) }}
+{% endif -%}
+{% endfor -%}
+{% endblock %}

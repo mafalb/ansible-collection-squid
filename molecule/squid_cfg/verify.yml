@@ -1,0 +1,36 @@
+# vim: set ft=yaml ts=2 expandtab:
+
+# This file is part of ansible-collection-squid
+# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
+#
+# ansible-collection-squid is free software: you can redistribute it 
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# ansible-collection-squid is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ansible-collection-squid.
+# If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+- import_playbook: '../default/verify.yml'
+
+- name: Verify Client
+  hosts: all,!ci-client
+  tasks:
+
+  - name: grep for custom template
+    command: grep 'shutdown_lifetime 30' /etc/squid/squid.conf
+    changed_when: false
+
+  - name: grep for custom template
+    command: grep 'grep me' /etc/squid/squid.conf
+    changed_when: false
+
+...
