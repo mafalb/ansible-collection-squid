@@ -96,4 +96,9 @@ jobs:
           source ~/.virtualenvs/molecule/bin/activate
           molecule test
 
+      - name: run molecule tests
+        run: |
+          source ~/.virtualenvs/molecule/bin/activate
+          molecule test -s custom_template
+
 ...

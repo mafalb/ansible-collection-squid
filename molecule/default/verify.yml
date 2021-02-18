@@ -61,7 +61,7 @@
   - name: request without proxy - failed
     assert:
       that:
-      - _result.rc != 0
+      - _result.failed|bool
 
 - name: Verify
   hosts: all,!ci-client
@@ -108,6 +108,6 @@
   - name: request without proxy - failed
     assert:
       that:
-      - _result.rc != 0
+      - _result.failed|bool
 
 ...

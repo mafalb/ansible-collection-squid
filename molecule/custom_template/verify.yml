@@ -19,13 +19,13 @@
 
 ---
 
-import_playbook: ../default/verify.yml
+- import_playbook: '../default/verify.yml'
 
-- name: Verify
-  hosts: ci-client
+- name: Verify Client
+  hosts: all,!ci-client
   tasks:
 
-  - name: 
+  - name: grep for custom template
     command: grep '# ci with custom template' /etc/squid/squid.conf
     changed_when: false
 
