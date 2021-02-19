@@ -19,28 +19,8 @@
 
 ---
 
-namespace: mafalb
-name: squid
-version: 0.1.0
-readme: README.md
-
-authors:
-- Markus Falb <markus.falb@mafalb.at>
-
-description: Ansible collection for squid
-
-license:
-- GPL-3.0-or-later
-
-tags:
-- squid
-- proxy
-
-dependencies: {}
-
-repository: https://github.com/mafalb/ansible-collection-squid
-documentation: https://github.com/mafalb/ansible-collection-squid
-homepage: https://github.com/mafalb/ansible-collection-squid
-issues: https://github.com/mafalb/ansible-collection-squid/issues
+squid_state: present
+squid_cfg_template: mafalb.squid.server.conf.j2
+squid_cfg: {}
 
 ...

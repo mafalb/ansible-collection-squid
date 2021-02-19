@@ -1,0 +1,68 @@
+# vim: set ft=yaml ts=2 expandtab:
+
+# This file is part of ansible-collection-squid
+# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
+#
+# ansible-collection-squid is free software: you can redistribute it 
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# ansible-collection-squid is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ansible-collection-squid.
+# If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+squid_spool_dir: /var/spool/squid
+
+squid_default_cfg:
+
+  acl:
+
+    localnet:
+    - src 0.0.0.1-0.255.255.255 # RFC 1122 "this" network (LAN)
+    - src 10.0.0.0/8            # RFC 1918 local private network (LAN)
+    - src 100.64.0.0/10         # RFC 6598 shared address space (CGN)
+    - src 169.254.0.0/16        # RFC 3927 link-local (directly plugged) machines
+    - src 172.16.0.0/12         # RFC 1918 local private network (LAN)
+    - src 192.168.0.0/16        # RFC 1918 local private network (LAN)
+    - src fc00::/7              # RFC 4193 local private network range
+    - src fe80::/10             # RFC 4291 link-local (directly plugged) machines
+
+    SSL_ports: port 443
+
+    Safe_ports:
+    - port 80   # http
+    - port 443  # https
+
+    CONNECT: method CONNECT
+
+  http_access:
+  - deny !Safe_Ports
+  - deny CONNECT !SSL_ports
+  - allow localhost manager
+  - deny manager
+  - deny to_localhost
+  - allow localhost
+  - allow localnet
+  - deny all
+
+  http_port: 3128
+  coredump_dir: "{{ squid_spool_dir }}" # Leave coredumps in the first cache dir
+
+  refresh_pattern:
+  - '^ftp 1440 20% 10080'
+  - '^gopher 1440 0% 1440'
+  - '-i (/cgi-bin/|\?) 0 0% 0'
+  - '. 0 20% 4320'
+
+squid:
+  cfg: "{{ squid_default_cfg|combine(squid_cfg) }}"
+
+...

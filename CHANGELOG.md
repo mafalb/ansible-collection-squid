@@ -1,7 +1,9 @@
 # Changelog
 
-## 0.0.4 XXXX-XX-XX
+## 0.1.0 2021-02-19
 
+- configure squid via squid_cfg dictionary
+- CI Testing on RHELish and Debianish Systems
 - improvements to CI
 
 ## 0.0.3 2020-12-07

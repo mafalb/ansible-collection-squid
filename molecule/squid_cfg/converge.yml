@@ -19,28 +19,21 @@
 
 ---
 
-namespace: mafalb
-name: squid
-version: 0.1.0
-readme: README.md
-
-authors:
-- Markus Falb <markus.falb@mafalb.at>
-
-description: Ansible collection for squid
-
-license:
-- GPL-3.0-or-later
-
-tags:
-- squid
-- proxy
-
-dependencies: {}
-
-repository: https://github.com/mafalb/ansible-collection-squid
-documentation: https://github.com/mafalb/ansible-collection-squid
-homepage: https://github.com/mafalb/ansible-collection-squid
-issues: https://github.com/mafalb/ansible-collection-squid/issues
+- name: Converge
+  hosts: all,!ci-client
+  roles:
+  - role: mafalb.squid.server
+    squid_cfg_template: squid.conf.j2
+    squid_cfg:
+      acl:
+        myhosts:
+        - src 127.0.0.1
+        - src 192.168.0.0/16
+        - src 10.0.0.0/8
+        - src 172.16.0.0/12
+      http_access:
+      - allow myhosts
+      - deny all
+      shutdown_lifetime: 30 seconds # that i have something to grep in CI
 
 ...

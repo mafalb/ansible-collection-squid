@@ -1,8 +1,26 @@
 # vim: set ft=yaml ts=2 expandtab:
+
+# This file is part of ansible-collection-squid
+# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
+#
+# ansible-collection-squid is free software: you can redistribute it 
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# ansible-collection-squid is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ansible-collection-squid.
+# If not, see <https://www.gnu.org/licenses/>.
+
 ---
 
 - name: Verify
-  hosts: t_client
+  hosts: ci-client
   tasks:
 
   - name: request without proxy - start
@@ -30,7 +48,7 @@
   - debug: var=_async_request
 
   - name: request without proxy - wait for timeout
-    delegate_to: t_client
+    delegate_to: ci-client
     async_status:
       jid: "{{ _async_request.ansible_job_id }}"
     register: _result
@@ -43,53 +61,9 @@
   - name: request without proxy - failed
     assert:
       that:
-      - _result.rc != 0
-
-- name: Verify
-  hosts: all,!t_client
-
-  tasks:
-
-  - name: request without proxy - failed
-    delegate_to: t_client
-    command: curl -sv -x '' https://www.google.at/
-    args:
-      warn: false
-    register: _async_request
-    changed_when: false
-    async: 300
-    poll: 0
-
-  - name: request through squid is working
-    delegate_to: t_client
-    command: curl -sv -x {{ inventory_hostname }}:3128 https://www.google.at/gugu
-    changed_when: false
-    args:
-      warn: false
-
-  - name: request through squid is working
-    get_url:
-      url: https://www.google.at/
-      dest: /dev/null
-    environment:
-      https_proxy: "{{ inventory_hostname }}:3128"
-
-  - debug: var=_async_request
-
-  - name: request without proxy - wait for timeout
-    delegate_to: t_client
-    async_status:
-      jid: "{{ _async_request.ansible_job_id }}"
-    register: _result
-    until: _result.finished
-    retries: 10
-    failed_when: false
-
-  - debug: var=_result
-
-  - name: request without proxy - failed
-    assert:
-      that:
-      - _result.rc != 0
+      # some containers (maybe on older docker versions?) can resolve DNS
+      # although on a private network - this will lead to a connect timeout
+      # and others will fail the DNS lookup - this will lead to rc != 0
+      - _result.failed|default(false) or _result.rc != 0
 
 ...

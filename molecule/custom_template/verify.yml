@@ -19,28 +19,14 @@
 
 ---
 
-namespace: mafalb
-name: squid
-version: 0.1.0
-readme: README.md
+- import_playbook: '../default/verify.yml'
 
-authors:
-- Markus Falb <markus.falb@mafalb.at>
+- name: Verify Client
+  hosts: all,!ci-client
+  tasks:
 
-description: Ansible collection for squid
-
-license:
-- GPL-3.0-or-later
-
-tags:
-- squid
-- proxy
-
-dependencies: {}
-
-repository: https://github.com/mafalb/ansible-collection-squid
-documentation: https://github.com/mafalb/ansible-collection-squid
-homepage: https://github.com/mafalb/ansible-collection-squid
-issues: https://github.com/mafalb/ansible-collection-squid/issues
+  - name: grep for custom template
+    command: grep '# ci with custom template' /etc/squid/squid.conf
+    changed_when: false
 
 ...

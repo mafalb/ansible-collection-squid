@@ -29,6 +29,14 @@ jobs:
         target:
         - centos7
         - centos8
+        - centosstream8
+        - ubuntu-18.04
+        - ubuntu-20.04
+        - fedora32
+        - fedora33
+        - debian9
+        - debian10
+
 
         ansible_version:
         - '2.10'
@@ -44,11 +52,41 @@ jobs:
           image: centos
           tag: 8
 
+        - target: centosstream8
+          distribution: centos
+          registry: "quay.io/centos/"
+          version: stream8
+
+        - target: ubuntu-18.04
+          distribution: ubuntu
+          version: bionic
+
+        - target: ubuntu-20.04
+          distribution: ubuntu
+          version: focal
+
+        - target: fedora32
+          distribution: fedora
+          version: 32
+
+        - target: fedora33
+          distribution: fedora
+          version: 33
+
+        - target: debian9
+          distribution: debian
+          version: stretch
+
+        - target: debian10
+          distribution: debian
+          version: buster
+
+
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
-      CI_CONTAINER_PRIVILEGED: true
+      CI_REGISTRY: ${{ matrix.registry }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
@@ -63,8 +101,8 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
-      - name: install dependencies
-        run: ansible-galaxy collection install -r molecule/requirements.yml
+      - name: get mafalb.ansible
+        run: ansible-galaxy collection install mafalb.ansible
 
       - name: install molecule
         run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
@@ -74,9 +112,19 @@ jobs:
           source ~/.virtualenvs/molecule/bin/activate
           ansible --version | grep "^ansible ${{ matrix.ansible_version }}"
 
-      - name: run molecule tests
+      - name: molecule default scenario
         run: |
           source ~/.virtualenvs/molecule/bin/activate
           molecule test
+
+      - name: molecule custom_template scenario
+        run: |
+          source ~/.virtualenvs/molecule/bin/activate
+          molecule test -s custom_template
+
+      - name: molecule squid_cfg scenario
+        run: |
+          source ~/.virtualenvs/molecule/bin/activate
+          molecule test -s squid_cfg
 
 ...
