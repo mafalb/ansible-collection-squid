@@ -3,6 +3,7 @@
 ## 0.1.0 XXXX-XX-XX
 
 - configure squid via squid_cfg dictionary
+- CI Testing on RHELish and Debianish Systems
 - improvements to CI
 
 ## 0.0.3 2020-12-07
