@@ -32,6 +32,18 @@ galaxy_info:
     versions:
     - 7
     - 8
+  - name: Fedora
+    versions:
+    - 32
+    - 33
+  - name: Ubuntu
+    versions:
+    - bionic
+    - focal
+  - name: Debian
+    versions:
+    - stretch
+    - buster
 
   galaxy_tags:
   - squid
