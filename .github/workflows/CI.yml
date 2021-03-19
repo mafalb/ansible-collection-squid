@@ -29,6 +29,7 @@ jobs:
         target:
         - centos7
         - centos8
+        - alma8
         - centosstream8
         - ubuntu-18.04
         - ubuntu-20.04
@@ -51,6 +52,11 @@ jobs:
         - target: centos8
           image: centos
           tag: 8
+
+        - target: alma8
+          distribution: almalinux
+          registry: "docker.io/almalinux/"
+          version: 8
 
         - target: centosstream8
           distribution: centos
