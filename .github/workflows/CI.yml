@@ -56,36 +56,36 @@ jobs:
         - target: alma8
           distribution: almalinux
           registry: "docker.io/almalinux/"
-          version: 8
+          tag: 8
 
         - target: centosstream8
           distribution: centos
           registry: "quay.io/centos/"
-          version: stream8
+          tag: stream8
 
         - target: ubuntu-18.04
           distribution: ubuntu
-          version: bionic
+          tag: bionic
 
         - target: ubuntu-20.04
           distribution: ubuntu
-          version: focal
+          tag: focal
 
         - target: fedora32
           distribution: fedora
-          version: 32
+          tag: 32
 
         - target: fedora33
           distribution: fedora
-          version: 33
+          tag: 33
 
         - target: debian9
           distribution: debian
-          version: stretch
+          tag: stretch
 
         - target: debian10
           distribution: debian
-          version: buster
+          tag: buster
 
 
     env:
