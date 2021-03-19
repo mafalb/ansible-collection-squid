@@ -46,11 +46,11 @@ jobs:
         include:
 
         - target: centos7
-          image: centos
+          distribution: centos
           tag: 7
 
         - target: centos8
-          image: centos
+          distribution: centos
           tag: 8
 
         - target: alma8
@@ -90,7 +90,7 @@ jobs:
 
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
-      CI_CONTAINER_IMAGE: ${{ matrix.image }}
+      CI_CONTAINER_IMAGE: ${{ matrix.distribution }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
       CI_REGISTRY: ${{ matrix.registry }}
       PY_COLORS: 1
