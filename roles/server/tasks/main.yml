@@ -23,7 +23,8 @@
   package:
     name: squid
 
-- debug: var=squid_cfg_template
+- name: debug squid_cfg_template
+  debug: var=squid_cfg_template
   tags:
   - never
   - debug
