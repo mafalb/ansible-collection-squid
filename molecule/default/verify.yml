@@ -57,8 +57,7 @@
     retries: 10
     failed_when: false
 
-  - name: debug _result
-    debug: var=_result
+  - debug: var=_result
 
   - name: request without proxy - failed
     assert:
