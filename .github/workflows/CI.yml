@@ -111,9 +111,9 @@ jobs:
       - name: mv ansible
         run: |
           pwd
-          ls
+          ls -l ../
           mkdir -p ~/.ansible/collections/ansible_collections/mafalb
-          mv ../ansible   /.ansible/collections/ansible_collections/mafalb/
+          mv ../ansible ~/.ansible/collections/ansible_collections/mafalb/
 
       - name: get mafalb.ansible
         if: false
