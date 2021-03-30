@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 XXXX-XX-XX
+
+- CI for alma 8
+- CI is ansible-lint 5 ready
+
 ## 0.1.0 2021-02-19
 
 - configure squid via squid_cfg dictionary
