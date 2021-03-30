@@ -108,7 +108,22 @@ jobs:
           path: ansible_collections/mafalb/squid
 
       - name: get mafalb.ansible
+        if: false
         run: ansible-galaxy collection install mafalb.ansible
+
+      - name: checkout collection
+        uses: actions/checkout@v2
+        with:
+          repository: mafalb/ansible-collection-ansible
+          ref: dev
+          path: ansible_collections/mafalb/ansible
+
+      - name: mv ansible
+        run: |
+          pwd
+          ls -l ../
+          mkdir -p ~/.ansible/collections/ansible_collections/mafalb
+          mv ../ansible ~/.ansible/collections/ansible_collections/mafalb/
 
       - name: install molecule
         run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
