@@ -3,7 +3,7 @@
 ## 0.1.1 XXXX-XX-XX
 
 - CI for alma 8
-- CI ansible-lint 5
+- CI is ansible-lint 5 ready
 
 ## 0.1.0 2021-02-19
 
