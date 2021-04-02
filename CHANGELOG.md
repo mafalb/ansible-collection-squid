@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.1.1 XXXX-XX-XX
+## 0.1.2 2021-04-02
+
+- CI: install system ansible
+- CI: use playbook from mafalb.ansible to install molecule
+
+## 0.1.1 2021-03-30
 
 - CI for alma 8
 - CI is ansible-lint 5 ready
