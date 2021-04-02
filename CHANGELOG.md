@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 XXXX-XX-XX
+## 0.1.1 2021-03-30
 
 - CI for alma 8
 - CI is ansible-lint 5 ready

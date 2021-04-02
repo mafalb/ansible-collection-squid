@@ -107,6 +107,9 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
+      - name: update apt cache
+        run: sudo apt-get update
+
       - name: get mafalb.ansible
         run: ansible-galaxy collection install mafalb.ansible
 
