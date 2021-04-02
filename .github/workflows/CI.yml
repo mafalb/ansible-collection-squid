@@ -112,7 +112,7 @@ jobs:
 
       - name: install molecule
         run: |
-          apt install ansible
+          sudo apt install ansible
           /usr/bin/ansible-playbook -D ~/.ansible/collections/ansible_collections/mafalb/ansible/bootstrap.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
 
       - name: check ansible version
