@@ -107,13 +107,11 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
-      - name: get mafalb.ansible
-        run: ansible-galaxy collection install mafalb.ansible
-
       - name: install molecule
         run: |
           sudo apt install ansible
-          /usr/bin/ansible-playbook -D ~/.ansible/collections/ansible_collections/mafalb/ansible/bootstrap.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
+          ansible-galaxy collection install -r molecule/requirements.yml
+          /usr/bin/ansible-playbook -D ~/.ansible/collections/ansible_collections/mafalb/ansible/playbooks/molecule.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
 
       - name: check ansible version
         run: |
