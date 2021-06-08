@@ -110,10 +110,17 @@ jobs:
       - name: install system ansible
         run: sudo apt install ansible
 
-      # note: this uses ansible-galaxy from preinstalled ansible (2.10)
-      #
-      - name: install mafalb.ansible
-        run: ansible-galaxy collection install -r molecule/requirements.yml
+      - name: checkout collection mafalb.ansible
+        uses: actions/checkout@v2
+        with:
+          repository: mafalb/ansible-collection-ansible
+          ref: dev
+          path: ansible_collections/mafalb/ansible
+
+      - name: mv ansible
+        run: |
+          mkdir -p ~/.ansible/collections/ansible_collections/mafalb
+          mv ../ansible ~/.ansible/collections/ansible_collections/mafalb/
 
       # note: this uses ansible-playbook from system ansible
       #
@@ -123,7 +130,7 @@ jobs:
       - name: check ansible version
         run: |
           source ~/.virtualenvs/molecule/bin/activate
-          ansible --version | grep "^ansible ${{ matrix.ansible_version }}"
+          ansible --version | grep "^ansible.* ${{ matrix.ansible_version }}"
 
       - name: molecule default scenario
         run: |
