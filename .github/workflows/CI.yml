@@ -110,7 +110,7 @@ jobs:
       # use the github actions ansible
       #
       - name: get mafalb.ansible
-        run: ansible-galaxy collection install mafalb.ansible
+        run: ansible-galaxy collection install mafalb.ansible:'>=4'
 
       # use the system ansible
       #
