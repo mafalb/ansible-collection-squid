@@ -27,23 +27,36 @@ jobs:
       matrix:
 
         target:
+        - fedora33
+        - fedora34
+        - c8s
         - centos7
         - centos8
         - alma8
-        - centosstream8
-        - ubuntu-18.04
-        - ubuntu-20.04
-        - fedora32
-        - fedora33
         - debian9
         - debian10
-
+        - ubuntu-18.04
+        - ubuntu-20.04
 
         ansible_version:
+        - '2.11'
         - '2.10'
         - '2.9'
 
         include:
+
+        - target: fedora33
+          distribution: fedora
+          tag: 33
+
+        - target: fedora34
+          distribution: fedora
+          tag: 34
+
+        - target: c8s
+          distribution: centos
+          registry: "quay.io/centos/"
+          tag: stream8
 
         - target: centos7
           distribution: centos
@@ -58,10 +71,13 @@ jobs:
           registry: "docker.io/almalinux/"
           tag: 8
 
-        - target: centosstream8
-          distribution: centos
-          registry: "quay.io/centos/"
-          tag: stream8
+        - target: debian9
+          distribution: debian
+          tag: stretch
+
+        - target: debian10
+          distribution: debian
+          tag: buster
 
         - target: ubuntu-18.04
           distribution: ubuntu
@@ -71,28 +87,12 @@ jobs:
           distribution: ubuntu
           tag: focal
 
-        - target: fedora32
-          distribution: fedora
-          tag: 32
-
-        - target: fedora33
-          distribution: fedora
-          tag: 33
-
-        - target: debian9
-          distribution: debian
-          tag: stretch
-
-        - target: debian10
-          distribution: debian
-          tag: buster
-
 
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
+      CI_REGISTRY: ${{ matrix.registry }}
       CI_CONTAINER_IMAGE: ${{ matrix.distribution }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
-      CI_REGISTRY: ${{ matrix.registry }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
