@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 2021-06-08
+
+- added support for ansible-core 2.11
+- added support for ansible 3.0.0 and 4.0.0
+
 ## 0.1.2 2021-04-02
 
 - CI: install system ansible
