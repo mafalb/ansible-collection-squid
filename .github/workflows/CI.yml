@@ -110,23 +110,13 @@ jobs:
       - name: install system ansible
         run: sudo apt install ansible
 
-      - name: checkout collection mafalb.ansible
-        uses: actions/checkout@v2
-        with:
-          repository: mafalb/ansible-collection-ansible
-          ref: dev
-          path: ansible_collections/mafalb/ansible
-
-      - name: mv ansible
-        run: |
-          mkdir -p ~/.ansible/collections/ansible_collections/mafalb
-          mv ../ansible ~/.ansible/collections/ansible_collections/mafalb/
-
       # note: this uses ansible-playbook from system ansible
       #
       - name: install molecule
         run: /usr/bin/ansible-playbook -D ~/.ansible/collections/ansible_collections/mafalb/ansible/playbooks/molecule.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
 
+      # this uses our own ansible
+      #
       - name: check ansible version
         run: |
           source ~/.virtualenvs/molecule/bin/activate
