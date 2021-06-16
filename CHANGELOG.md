@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 2021-XX-XX
+
+- CI
+
 ## 0.2.0 2021-06-08
 
 - added support for ansible-core 2.11
