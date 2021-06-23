@@ -70,7 +70,7 @@ jobs:
         - target: rocky8
           distribution: rockylinux
           registry: "docker.io/rockylinux/"
-          tag: '8.4-rc1'
+          tag: '8'
 
         - target: alma8
           distribution: almalinux
