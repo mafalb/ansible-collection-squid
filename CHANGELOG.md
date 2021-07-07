@@ -2,7 +2,7 @@
 
 ## 0.2.1 2021-XX-XX
 
-- CI
+- CI: decouple image name from instance name
 
 ## 0.2.0 2021-06-08
 
