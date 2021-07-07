@@ -33,7 +33,7 @@
     poll: 0
 
   - name: request through squid is working
-    command: curl -sv -x {{ groups['server'][0] }}:3128 https://www.google.at
+    command: curl -sv -x http://{{ groups['server'][0] }}:3128 https://www.google.at
     changed_when: false
     args:
       warn: false

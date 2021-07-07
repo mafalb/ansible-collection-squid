@@ -24,4 +24,14 @@
   roles:
   - role: mafalb.squid.server
 
+- name: Converge client
+  hosts: ci-client
+  environment:
+    http_proxy: http://{{ groups['server'][0] }}:3128
+    https_proxy: http://{{ groups['server'][0] }}:3128
+
+  tasks:
+  - name: curl is present
+    package:
+      name: curl
 ...
