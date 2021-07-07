@@ -71,13 +71,16 @@ platforms:
   volumes:
   - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   tmpfs:
-  - /run
   - /tmp
+  - /run
+  - /run/lock
   capabilities:
   - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   tty: true
+  groups:
+  - client_group
 
 provisioner:
   name: ansible
