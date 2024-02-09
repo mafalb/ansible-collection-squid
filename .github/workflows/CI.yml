@@ -106,5 +106,4 @@ jobs:
         run: |
           source ~/.virtualenvs/ansible/bin/activate
           molecule test -s squid_cfg
-
 ...
