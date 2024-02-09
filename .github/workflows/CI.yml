@@ -93,7 +93,7 @@ jobs:
         run: |
           source ~/.virtualenvs/ansible/bin/activate
           tree -a
-          molecule test -c molecule/resources/molecule.yml -e ".env-$CI_TARGET" test
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET" test
 
       - name: molecule custom_template scenario
         working-directory: ansible_collections/mafalb/squid
