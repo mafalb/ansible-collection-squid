@@ -78,7 +78,7 @@ jobs:
       - name: Install Ansible
         uses: ./workflows/.github/actions/installansible
         with:
-          extra_packages: 'molecule_podman,molecule'
+          extra_packages: 'molecule_podman,molecule_docker,molecule'
           ref: dev  # FIX
           ansible_version: ${{ matrix.ansible_version }}
 
