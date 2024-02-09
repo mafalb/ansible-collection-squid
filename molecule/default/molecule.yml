@@ -26,14 +26,6 @@ dependency:
 driver:
   name: podman
 
-lint: |
-  set -e
-  ! grep -r "no_log: false" .
-  yamllint .
-  ansible-lint -vv
-  ansible-lint -v roles/*/vars/*.yml
-  flake8 -v
-
 platforms:
 - name: ${CI_HOSTNAME-"ci-rocky8"}
   image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
@@ -94,12 +86,7 @@ provisioner:
       stdout_callback: yaml
       bin_ansible_callbacks: true
 
-  lint:
-    name: ansible-lint
-
 verifier:
   name: ansible
-  lint:
-    name: ansible-lint
 
 ...
