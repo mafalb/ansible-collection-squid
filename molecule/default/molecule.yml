@@ -21,7 +21,8 @@
 
 dependency:
   name: galaxy
-  enabled: false
+  options:
+    requirements-file: requirements.yml
 
 driver:
   name: podman
@@ -83,8 +84,6 @@ provisioner:
     defaults:
       gathering: smart
       interpreter_python: auto
-      stdout_callback: yaml
-      bin_ansible_callbacks: true
 
 verifier:
   name: ansible
