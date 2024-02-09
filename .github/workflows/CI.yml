@@ -27,17 +27,12 @@ jobs:
       matrix:
 
         target:
-        - fedora34
-        - fedora33
         - c8s
         - alma8
         - rocky8
         - centos7
-        - debian9
-        - debian10
-        - ubuntu16
-        - ubuntu18
         - ubuntu20
+        - ubuntu22
 
         ansible_version:
         - '2.14'
@@ -60,6 +55,9 @@ jobs:
 
         - target: ubuntu20
           image: docker.io/ubuntu:focal
+
+        - target: ubuntu22
+          image: docker.io/ubuntu:jammy
 
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
