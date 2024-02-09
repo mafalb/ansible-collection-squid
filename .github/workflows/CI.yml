@@ -91,7 +91,7 @@ jobs:
         working-directory: ansible_collections/mafalb/squid
         run: |
           source ~/.virtualenvs/ansible/bin/activate
-          molecule test
+          molecule -vvv test
 
       - name: molecule custom_template scenario
         working-directory: ansible_collections/mafalb/squid
