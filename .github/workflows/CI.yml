@@ -85,7 +85,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: ansible/collections/mafalb/squid
+          path: ansible_collections/mafalb/squid
 
       - name: molecule default scenario
         working-directory: ansible_collections/mafalb/squid
