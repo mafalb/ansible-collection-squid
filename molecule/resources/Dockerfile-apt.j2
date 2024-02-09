@@ -17,7 +17,7 @@ ENV {{ var }} {{ value }}
 {% endfor %}
 {% endif %}
 
-RUN apt-get update && apt-get install -y python3 sudo bash ca-certificates iproute2 && apt-get clean
+RUN apt-get update && apt-get install -y python3 sudo bash ca-certificates iproute2 systemd && apt-get clean
 
 RUN if test -d /lib/systemd/system/sysinit.target.wants/ ; then (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done);\
  rm -f /lib/systemd/system/multi-user.target.wants/*;\
