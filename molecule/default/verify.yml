@@ -3,7 +3,7 @@
 # This file is part of ansible-collection-squid
 # Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
 #
-# ansible-collection-squid is free software: you can redistribute it 
+# ansible-collection-squid is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
@@ -23,32 +23,32 @@
   hosts: ci-client
   tasks:
 
-  - name: request without proxy - start
-    command: curl -sv -x '' https://www.google.at
-    args:
-      warn: false
+  - name: Make a request without proxy - start
+    command:  # noqa command-instead-of-module
+      cmd: curl -sv -x '' https://www.google.at
     changed_when: false
     register: _async_request
     async: 300
     poll: 0
 
-  - name: request through squid is working
-    command: curl -sv -x http://{{ groups['server'][0] }}:3128 https://www.google.at
+  - name: A request through squid is working
+    command:  # noqa command-instead-of-module
+      cmd: curl -sv -x http://{{ groups['server'][0] }}:3128 https://www.google.at
     changed_when: false
-    args:
-      warn: false
 
-  - name: request through squid is working
+  - name: A request through squid is working
     get_url:
       url: https://www.google.at/
       dest: /dev/null
+      mode: '0644'
     environment:
       https_proxy: "{{ groups['server'][0] }}:3128"
 
-  - name: debug _async_request
-    debug: var=_async_request
+  - name: Debug _async_request
+    debug:
+      var: _async_request
 
-  - name: request without proxy - wait for timeout
+  - name: A request without proxy - wait for timeout
     delegate_to: ci-client
     async_status:
       jid: "{{ _async_request.ansible_job_id }}"
@@ -57,10 +57,11 @@
     retries: 10
     failed_when: false
 
-  - name: debug _result
-    debug: var=_result
+  - name: Debug _result
+    debug:
+      var: _result
 
-  - name: request without proxy - failed
+  - name: A request without proxy - failed
     assert:
       that:
       # some containers (maybe on older docker versions?) can resolve DNS

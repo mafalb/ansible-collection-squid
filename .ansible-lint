@@ -1,0 +1,7 @@
+---
+skip_list:
+  - var-naming[no-role-prefix]
+  - fqcn[action-core]
+  - galaxy[version-incorrect]
+warn_list: []
+...

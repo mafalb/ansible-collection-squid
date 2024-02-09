@@ -3,8 +3,8 @@
 
 name: CI
 
-on:
-  
+on:  # yamllint disable-line rule:truthy
+
   push:
     branches:
     - '**'
@@ -33,7 +33,6 @@ jobs:
         - alma8
         - rocky8
         - centos7
-        - centos8
         - debian9
         - debian10
         - ubuntu16
@@ -41,17 +40,11 @@ jobs:
         - ubuntu20
 
         ansible_version:
-        - '2.11'
-        - '2.10'
-        - '2.9'
+        - '2.14'
+        - '2.15'
+        - '2.16'
 
         include:
-
-        - target: fedora33
-          image: docker.io/fedora:33
-
-        - target: fedora34
-          image: docker.io/fedora:34
 
         - target: c8s
           image: quay.io/centos/centos:stream8
@@ -65,21 +58,6 @@ jobs:
         - target: centos7
           image: quay.io/centos/centos:7
 
-        - target: centos8
-          image: quay.io/centos/centos:8
-
-        - target: debian9
-          image: docker.io/debian:stretch
-
-        - target: debian10
-          image: docker.io/debian:buster
-
-        - target: ubuntu16
-          image: docker.io/ubuntu:xenial
-
-        - target: ubuntu18
-          image: docker.io/ubuntu:bionic
-
         - target: ubuntu20
           image: docker.io/ubuntu:focal
 
@@ -90,49 +68,43 @@ jobs:
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 
-    defaults:
-      run:
-        working-directory: ansible_collections/mafalb/squid
-
     steps:
 
-      - name: checkout mafalb.squid
-        uses: actions/checkout@v2
+      - name: Checkout workflows
+        uses: actions/checkout@v4
         with:
-          path: ansible_collections/mafalb/squid
+          repository: mafalb/workflows
+          path: workflows
+          ref: f-ansiblecollection  # FIX
 
-      # use the github actions ansible
-      #
-      - name: get mafalb.ansible
-        run: ansible-galaxy collection install mafalb.ansible:'>=4'
+      - name: Install Ansible
+        uses: ./workflows/.github/actions/installansible
+        with:
+          extra_packages: 'molecule_podman,molecule'
+          ref: dev  # FIX
+          ansible_version: ${{ matrix.ansible_version }}
 
-      # use the system ansible
-      #
-      - name: install molecule
-        run: |
-          sudo apt install ansible
-          /usr/bin/ansible-playbook -D ~/.ansible/collections/ansible_collections/mafalb/ansible/playbooks/molecule.yml -e molecule_ansible_version=$ANSIBLE_VERSION -t all,debug
-
-      # use our ansible
-      #
-      - name: check ansible version
-        run: |
-          source ~/.virtualenvs/molecule/bin/activate
-          ansible --version | grep "^ansible.* ${{ matrix.ansible_version }}"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ansible/collections/mafalb/squid
 
       - name: molecule default scenario
+        working-directory: ansible_collections/mafalb/squid
         run: |
-          source ~/.virtualenvs/molecule/bin/activate
+          source ~/.virtualenvs/ansible/bin/activate
           molecule test
 
       - name: molecule custom_template scenario
+        working-directory: ansible_collections/mafalb/squid
         run: |
-          source ~/.virtualenvs/molecule/bin/activate
+          source ~/.virtualenvs/ansible/bin/activate
           molecule test -s custom_template
 
       - name: molecule squid_cfg scenario
+        working-directory: ansible_collections/mafalb/squid
         run: |
-          source ~/.virtualenvs/molecule/bin/activate
+          source ~/.virtualenvs/ansible/bin/activate
           molecule test -s squid_cfg
 
 ...

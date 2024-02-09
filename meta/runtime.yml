@@ -3,10 +3,6 @@
 # see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
 ---
 
-- name: Reload squid
-  when: not _squid_has_started.changed
-  service:
-    name: squid
-    state: reloaded
+requires_ansible: ">=2.9.10,>=2.14.0"
 
 ...

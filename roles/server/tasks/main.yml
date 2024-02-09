@@ -1,51 +1,36 @@
-# vim: set ft=yaml ts=2 expandtab:
-
-# This file is part of ansible-collection-squid
-# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
-#
-# ansible-collection-squid is free software: you can redistribute it 
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# ansible-collection-squid is distributed in the hope that it will be
-# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ansible-collection-squid.
-# If not, see <https://www.gnu.org/licenses/>.
-
+# Copyright (c) 2022 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
 ---
 
-- name: squid is present
+- name: Squid is present
   package:
     name: squid
 
-- name: debug squid_cfg_template
-  debug: var=squid_cfg_template
+- name: Debug squid_cfg_template
+  debug:
+    var: squid_cfg_template
   tags:
   - never
   - debug
 
-- name: check config
+- name: Check config
   assert:
     that:
     - squid.cfg.acl is defined
     - squid.cfg.http_access is defined
     - squid.cfg|type_debug == 'dict'
 
-- name: squid is configured
+- name: Squid is configured
   template:
     src: "{{ squid_cfg_template }}"
     dest: /etc/squid/squid.conf
     mode: '644'
     backup: true
     validate: squid -k parse -f %s
-  notify: reload squid
+  notify: Reload squid
 
-- name: squid is running
+- name: Squid is running
   service:
     name: squid
     state: started
