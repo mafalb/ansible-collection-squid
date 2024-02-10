@@ -33,22 +33,16 @@ platforms:
   dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
   network_mode: bridge
-  docker_networks:
-  - name: molecule-internal
-    internal: true
   networks:
     - name: molecule-external
     - name: molecule-internal
   volumes:
     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  tmpfs:
-    - /tmp
-    - /run
-    - /run/lock
   capabilities:
     - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  systemd: true
   tty: true
   groups:
   - server
@@ -58,21 +52,15 @@ platforms:
   dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
   network_mode: bridge
-  docker_networks:
-  - name: molecule-internal
-    internal: true
   networks:
   - name: molecule-internal
   volumes:
   - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  tmpfs:
-  - /tmp
-  - /run
-  - /run/lock
   capabilities:
   - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  systemd: true
   tty: true
   groups:
   - client_group
