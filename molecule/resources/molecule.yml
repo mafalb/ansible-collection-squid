@@ -36,6 +36,10 @@ platforms:
   networks:
     - name: molecule-external
     - name: molecule-internal
+      internal: true
+  network:
+    - molecule-external
+    - molecule-internal
   volumes:
     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   capabilities:
@@ -52,8 +56,8 @@ platforms:
   dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
   network_mode: bridge
-  networks:
-  - name: molecule-internal
+  network:
+  - molecule-internal
   volumes:
   - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   capabilities:

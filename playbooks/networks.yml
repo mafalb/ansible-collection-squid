@@ -1,6 +1,42 @@
 - hosts: localhost
   vars:
     platforms:
+      - name: ci-rocky8
+        image: quay.io/rockylinux/rockylinux:8
+        dockerfile: ../resources/Dockerfile-dnf.j2
+        command: /lib/systemd/systemd
+        network_mode: bridge
+        networks:
+          - name: molecule-external
+          - name: molecule-internal
+            internal: true
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        capabilities:
+          - SYS_ADMIN
+        systemd: true
+        tty: true
+        groups:
+        - server
+
+      - name: ci-client
+        image: quay.io/rockylinux/rockylinux:8
+        dockerfile: ../resources/Dockerfile.j2
+        command: /lib/systemd/systemd
+        network_mode: bridge
+        networks:
+        - name: molecule-internal
+          internal: true
+        volumes:
+        - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        capabilities:
+        - SYS_ADMIN
+        systemd: true
+        tty: true
+        groups:
+        - client_group
+
+    platforms2:
       - name: host1
         network:
           - molecule-internal
@@ -13,30 +49,49 @@
           - molecule-external
       - name: host4
         bla: blubb
+
+    platforms3:
+      - name: host1
+        network:
+          - name: molecule-internal
+            internal: true
+      - name: host2
+        network:
+          - name: networkX
+      - name: host3
+        network:
+          - name: molecule-internal
+            internal: true
+          - name: molecule-external
+      - name: host4
+        bla: blubb
+
   tasks:
 
     - containers.podman.podman_network_info:
         name: "{{ item }}"
-      loop: "{{ platforms | ansible.builtin.subelements('network', 'skip_missing=True')|flatten|unique }}"
+      loop: "{{ platforms | ansible.builtin.subelements('networks', 'skip_missing=True')|flatten|unique }}"
       loop_control:
         label: "{{ item }}"
-      register: podman_network
+      register: podman_networks
       when:
-        - item is string
+        - item is not string and item is mapping and item is iterable
+        - item.network is not defined
       failed_when: false
 
     - name: Debug podman_network
       ansible.builtin.debug:
-        var: podman_network
+        var: podman_networks
 
     - name: Debug Create Network
       ansible.builtin.debug:
-        msg: "{{ item.item }}"
-      loop: "{{ podman_network.results }}"
-#      loop_control:
-#        label: "{{ item.item }}"
+        msg: "{{ item.item.name }}"
+      loop: "{{ podman_networks.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
       when:
         - item.msg is defined
+        - item.item.networks is not defined
         - item.skip_reason is not defined
         - item.skipped is not defined
         - false_condition is not defined
