@@ -30,25 +30,19 @@ driver:
 platforms:
 - name: ${CI_HOSTNAME}
   image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
-  dockerfile: ../resources/${CI_DOCKERFILE}
+  dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
   network_mode: bridge
-  docker_networks:
-  - name: molecule-internal
-    internal: true
-  networks:
-  - name: molecule-internal
-  - name: molecule-external
+  network:
+    - molecule-external
+    - molecule-internal
   volumes:
-  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  tmpfs:
-  - /tmp
-  - /run
-  - /run/lock
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   capabilities:
-  - SYS_ADMIN
+    - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  systemd: true
   tty: true
   groups:
   - server
@@ -58,19 +52,13 @@ platforms:
   dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
   network_mode: bridge
-  docker_networks:
-  - name: molecule-internal
-    internal: true
-  networks:
-  - name: molecule-internal
+  network:
+    - molecule-internal
   volumes:
   - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  tmpfs:
-  - /tmp
-  - /run
-  - /run/lock
+  systemd: true
   capabilities:
-  - SYS_ADMIN
+    - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   tty: true

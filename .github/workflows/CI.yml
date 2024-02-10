@@ -34,11 +34,6 @@ jobs:
         - ubuntu20
         - ubuntu22
 
-        ansible_version:
-        - '2.14'
-        - '2.15'
-        - '2.16'
-
         include:
 
         - target: c8s
@@ -60,7 +55,6 @@ jobs:
           image: docker.io/ubuntu:jammy
 
     env:
-      ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       CI_IMAGE: ${{ matrix.image }}
       CI_HOSTNAME: ci-${{ matrix.target }}
       CI_TARGET: ${{ matrix.target }}
@@ -81,7 +75,6 @@ jobs:
         with:
           extra_packages: 'molecule-plugins[docker,podman],molecule'
           ref: dev  # FIX
-          ansible_version: ${{ matrix.ansible_version }}
 
       - name: Checkout
         uses: actions/checkout@v4

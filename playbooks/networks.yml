@@ -1,0 +1,42 @@
+- hosts: localhost
+  vars:
+    platforms:
+      - name: host1
+        network:
+          - molecule-internal
+      - name: host2
+        network:
+          - networkX
+      - name: host3
+        network:
+          - molecule-internal
+          - molecule-external
+      - name: host4
+        bla: blubb
+  tasks:
+
+    - containers.podman.podman_network_info:
+        name: "{{ item }}"
+      loop: "{{ platforms | ansible.builtin.subelements('network', 'skip_missing=True')|flatten|unique }}"
+      loop_control:
+        label: "{{ item }}"
+      register: podman_network
+      when:
+        - item is string
+      failed_when: false
+
+    - name: Debug podman_network
+      ansible.builtin.debug:
+        var: podman_network
+
+    - name: Debug Create Network
+      ansible.builtin.debug:
+        msg: "{{ item.item }}"
+      loop: "{{ podman_network.results }}"
+#      loop_control:
+#        label: "{{ item.item }}"
+      when:
+        - item.msg is defined
+        - item.skip_reason is not defined
+        - item.skipped is not defined
+        - false_condition is not defined

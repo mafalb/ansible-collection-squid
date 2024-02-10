@@ -25,7 +25,7 @@ dependency:
     requirements-file: requirements.yml
 
 driver:
-  name: docker
+  name: podman
 
 platforms:
 - name: ${CI_HOSTNAME}
@@ -37,17 +37,17 @@ platforms:
   - name: molecule-internal
     internal: true
   networks:
-  - name: molecule-internal
-  - name: molecule-external
+    - name: molecule-external
+    - name: molecule-internal
   volumes:
-  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   tmpfs:
-  - /tmp
-  - /run
-  - /run/lock
+    - /tmp
+    - /run
+    - /run/lock
   capabilities:
-  - SYS_ADMIN
-  privileged: ${CI_CONTAINER_PRIVILEGED:-true}
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   tty: true
   groups:

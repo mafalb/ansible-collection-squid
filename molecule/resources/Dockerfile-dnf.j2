@@ -8,9 +8,6 @@ FROM {{ item.image }}
 STOPSIGNAL SIGRTMIN+3
 ENV container docker
 
-ENV LC_ALL C.UTF-8
-ENV LC_ALL C.UTF-8
-
 {% if item.env is defined %}
 {% for var, value in item.env.items() %}
 {% if value %}
