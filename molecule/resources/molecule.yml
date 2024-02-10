@@ -41,9 +41,9 @@ platforms:
     - molecule-internal
   volumes:
     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  capabilities:
-    - SYS_ADMIN
-  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+#  capabilities:
+#    - ${CI_CAPABILITIES:-SYS_ADMIN}
+  privileged: ${CI_CONTAINER_PRIVILEGED:-true}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   systemd: true
   groups:
