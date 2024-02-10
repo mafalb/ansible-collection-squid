@@ -32,7 +32,6 @@ platforms:
   image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
   dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
-  network_mode: bridge
   networks:
     - name: molecule-external
     - name: molecule-internal
@@ -47,7 +46,6 @@ platforms:
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   systemd: true
-  tty: true
   groups:
   - server
 
@@ -55,17 +53,15 @@ platforms:
   image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
   dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
-  network_mode: bridge
   network:
-  - molecule-internal
+    - molecule-internal
   volumes:
-  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   capabilities:
   - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   systemd: true
-  tty: true
   groups:
   - client_group
 
