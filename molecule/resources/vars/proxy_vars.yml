@@ -1,0 +1,7 @@
+# Copyright (c) 2022 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
+---
+proxyip_ipv4: "{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}"
+proxyip_ipv6: "{{ hostvars[groups['server'][0]].ansible_eth1.ipv6.address }}"
+...

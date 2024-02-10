@@ -25,9 +25,8 @@
 - name: Verify Client
   hosts: all,!ci-client
   tasks:
-
-  - name: Grep for custom template
-    command: grep '# ci with custom template' /etc/squid/squid.conf
-    changed_when: false
-
+    - name: Grep for custom template
+      command:
+        cmd: grep '# ci with custom template' /etc/squid/squid.conf
+      changed_when: false
 ...

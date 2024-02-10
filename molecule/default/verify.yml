@@ -19,8 +19,21 @@
 
 ---
 
+# http_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+# https_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+
+- name: Get Facts
+  hosts: server
+
 - name: Verify
   hosts: ci-client
+  vars_files:
+    - ../resources/vars/proxy_vars.yml
+
+  module_defaults:
+   shell:
+     executable: /bin/bash
+
   tasks:
 
   - name: Make a request without proxy - start
@@ -32,17 +45,19 @@
     poll: 0
 
   - name: A request through squid is working
-    command:  # noqa command-instead-of-module
-      cmd: curl -sv -x http://{{ groups['server'][0] }}:3128 https://www.google.at
+    shell: |  # noqa command-instead-of-module
+      set -o pipefail
+      curl -sv -x http://{{ proxyip_ipv4 }}:3128 https://www.google.at|base64  # make ansible deprecation happy
     changed_when: false
 
   - name: A request through squid is working
+    environment:
+      https_proxy: "{{ proxyip_ipv4 }}:3128"
     get_url:
       url: https://www.google.at/
-      dest: /dev/null
+      dest: /tmp/null
       mode: '0644'
-    environment:
-      https_proxy: "{{ groups['server'][0] }}:3128"
+    changed_when: false
 
   - name: Debug _async_request
     debug:

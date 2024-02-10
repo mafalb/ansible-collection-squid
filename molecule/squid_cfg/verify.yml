@@ -18,7 +18,6 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 ---
-
 - name: Verify
   import_playbook: '../default/verify.yml'
 
@@ -26,12 +25,14 @@
   hosts: all,!ci-client
   tasks:
 
-  - name: Grep for custom template
-    command: grep 'shutdown_lifetime 30' /etc/squid/squid.conf
-    changed_when: false
+    - name: Grep for custom template
+      command:
+        cmd: grep 'shutdown_lifetime 30' /etc/squid/squid.conf
+      changed_when: false
 
-  - name: Grep for custom template
-    command: grep 'grep me' /etc/squid/squid.conf
-    changed_when: false
-
+    - name: Grep for custom template
+      command:
+        cmd: grep 'grep me' /etc/squid/squid.conf
+      changed_when: false
+...
 ...

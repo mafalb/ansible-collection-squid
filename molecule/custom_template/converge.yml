@@ -28,8 +28,10 @@
 - name: Converge client
   hosts: ci-client
   environment:
-    http_proxy: http://{{ groups['server'][0] }}:3128
-    https_proxy: http://{{ groups['server'][0] }}:3128
+    # Do not rely on dns resolution working, use ip addresses
+    http_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+    https_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+
   tasks:
   - name: Curl is present
     package:

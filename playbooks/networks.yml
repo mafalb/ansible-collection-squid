@@ -1,4 +1,6 @@
-- hosts: localhost
+---
+- name: This is what i used developing create.yml
+  hosts: localhost
   vars:
     platforms:
       - name: ci-rocky8
@@ -10,6 +12,9 @@
           - name: molecule-external
           - name: molecule-internal
             internal: true
+        network:
+          - molecule-external
+          - molecule-internal
         volumes:
           - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
         capabilities:
@@ -24,9 +29,8 @@
         dockerfile: ../resources/Dockerfile.j2
         command: /lib/systemd/systemd
         network_mode: bridge
-        networks:
-        - name: molecule-internal
-          internal: true
+        network:
+          - molecule-internal
         volumes:
         - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
         capabilities:
@@ -36,62 +40,47 @@
         groups:
         - client_group
 
-    platforms2:
-      - name: host1
-        network:
-          - molecule-internal
-      - name: host2
-        network:
-          - networkX
-      - name: host3
-        network:
-          - molecule-internal
-          - molecule-external
-      - name: host4
-        bla: blubb
-
-    platforms3:
-      - name: host1
-        network:
-          - name: molecule-internal
-            internal: true
-      - name: host2
-        network:
-          - name: networkX
-      - name: host3
-        network:
-          - name: molecule-internal
-            internal: true
-          - name: molecule-external
-      - name: host4
-        bla: blubb
-
   tasks:
 
-    - containers.podman.podman_network_info:
-        name: "{{ item }}"
-      loop: "{{ platforms | ansible.builtin.subelements('networks', 'skip_missing=True')|flatten|unique }}"
+    - name: Get the one platform with networks defined
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ platforms }}"
       loop_control:
+        extended: true
         label: "{{ item }}"
       register: podman_networks
       when:
-        - item is not string and item is mapping and item is iterable
-        - item.network is not defined
+        - item.networks is defined
+        - ansible_loop.first
       failed_when: false
+
+    - name: Get network info
+      containers.podman.podman_network_info:
+        name: "{{ item.name }}"
+      loop: "{{ podman_networks.results[0].ansible_loop.allitems[0].networks }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: podman_network
+      failed_when: false
+
+    - name: Debug podman_networks
+      ansible.builtin.debug:
+        var: podman_networks
 
     - name: Debug podman_network
       ansible.builtin.debug:
-        var: podman_networks
+        var: podman_network
 
     - name: Debug Create Network
       ansible.builtin.debug:
         msg: "{{ item.item.name }}"
-      loop: "{{ podman_networks.results }}"
+      loop: "{{ podman_network.results }}"
       loop_control:
         label: "{{ item.item.name }}"
       when:
         - item.msg is defined
-        - item.item.networks is not defined
-        - item.skip_reason is not defined
-        - item.skipped is not defined
-        - false_condition is not defined
+#        - item.networks is not defined
+#        - item.skip_reason is not defined
+#        - item.skipped is not defined
+#        - false_condition is not defined

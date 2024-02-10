@@ -8,9 +8,6 @@
   vars:
     podman_exec: "{{ lookup('env','MOLECULE_PODMAN_EXECUTABLE')|default('podman',true) }}"
   tasks:
-    - name: Debug molecule dir
-      ansible.builtin.debug:
-        msg: "{{ lookup('ansible.builtin.env','MOLECULE_EMBEDDED_DATA_DIR') }}"
 
     - name: Log into a container registry
       containers.podman.podman_login:
@@ -109,22 +106,35 @@
           {{ item.command | default('None specified') }}"
       when: item.override_command | default(true)
 
-    - name: Discover local podman networks
-      when:
-        - item is not string and item is mapping and item is iterable
-        - item.network is not defined
-      containers.podman.podman_network_info:
-        name: "{{ item }}"
-        executable: "{{ podman_exec }}"
-      loop: "{{ molecule_yml.platforms | ansible.builtin.subelements('networks', 'skip_missing=True')|flatten|unique }}"
+    - name: Get the one platform with networks defined
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ molecule_yml.platforms }}"
       loop_control:
+        extended: true
         label: "{{ item }}"
       register: podman_networks
+      when:
+        - item.networks is defined
+        - ansible_loop.first
       failed_when: false
+
+    - name: Discover local podman networks
+      containers.podman.podman_network_info:
+        name: "{{ item.name }}"
+      loop: "{{ podman_networks.results[0].ansible_loop.allitems[0].networks }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: podman_network
+      failed_when: false
+
+    - name: Debug podman_networks
+      ansible.builtin.debug:
+        var: podman_networks
 
     - name: Debug podman_network
       ansible.builtin.debug:
-        var: podman_networks
+        var: podman_network
 
     - name: Create podman network dedicated to this scenario
       containers.podman.podman_network:
@@ -132,15 +142,11 @@
         internal: "{{ item.item.internal | default(omit) }}"
         subnet: "{{ item.item.subnet | default(omit) }}"
         executable: "{{ podman_exec }}"
-      loop: "{{ podman_networks.results }}"
+      loop: "{{ podman_network.results }}"
       loop_control:
-        label: "{{ item.item }}"
+        label: "{{ item.item.name }}"
       when:
         - item.msg is defined
-        - item.item.networks is not defined
-        - item.skip_reason is not defined
-        - item.skipped is not defined
-        - false_condition is not defined
 
     - name: Create molecule instance(s)
       containers.podman.podman_container:
