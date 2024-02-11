@@ -18,7 +18,13 @@ jobs:
 
   CI:
 
-    runs-on: ubuntu-22.04
+    # old cgroup v1 systems cannot run with githubs ubuntu-22.04
+    # need to set kernel parameters
+    #
+    # systemd.unified_cgroup_hierarchy=0
+    # systemd.legacy_systemd_cgroup_controller=1
+    #
+    runs-on: ubuntu-20.04
 
     strategy:
 
@@ -62,6 +68,11 @@ jobs:
       ANSIBLE_FORCE_COLOR: 1
 
     steps:
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Checkout workflows
         uses: actions/checkout@v4

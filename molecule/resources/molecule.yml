@@ -32,6 +32,8 @@ platforms:
   image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
   dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
+  security_opts:
+    - seccomp=unconfined
   networks:
     - name: molecule-external
     - name: molecule-internal
@@ -41,9 +43,9 @@ platforms:
     - molecule-internal
   volumes:
     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-#  capabilities:
-#    - ${CI_CAPABILITIES:-SYS_ADMIN}
-  privileged: ${CI_CONTAINER_PRIVILEGED:-true}
+  capabilities:
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   systemd: true
   groups:
@@ -57,9 +59,9 @@ platforms:
     - molecule-internal
   volumes:
     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  #capabilities:
-  #- SYS_ADMIN
-  privileged: ${CI_CONTAINER_PRIVILEGED:-true}
+  capabilities:
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   systemd: true
   groups:
