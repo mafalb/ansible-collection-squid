@@ -23,7 +23,7 @@ jobs:
       - name: Checkout workflows
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.selectbranch.outputs.selectbranch }}
+          ref: ${{ needs.selectbranch.outputs.ref }}
           path: workflows
 
   ansiblecollection:
