@@ -5,7 +5,7 @@
 
 - name: Squid is present
   package:
-    name: squid
+    name: "{{ squid_package_name }}"
 
 - name: Debug squid_cfg_template
   debug:

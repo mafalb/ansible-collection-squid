@@ -6,5 +6,6 @@
 squid_state: present
 squid_cfg_template: mafalb.squid.server.conf.j2
 squid_cfg: {}
+squid_package_name: squid
 
 ...
