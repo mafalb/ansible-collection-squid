@@ -28,10 +28,12 @@
      executable: /bin/bash
 
   tasks:
-    - name:
+    - name: Check that we have the correct variant of squid
       ansible.builtin.shell: |
+        set -o pipefail
         ! squid -v | grep -- "'--with-gnutls'"
         squid -v | grep "This binary uses OpenSSL"
+      changed_when: false
 
 
 - name: Verify that squid was built with gnutls
@@ -40,8 +42,10 @@
    shell:
      executable: /bin/bash
   tasks:
-    - name:
+    - name: Check that we have the correct variant of squid
       ansible.builtin.shell: |
+        set -o pipefail
         squid -v | grep -- "'--with-gnutls'"
         ! squid -v | grep "This binary uses OpenSSL"
+      changed_when: false
 ...
