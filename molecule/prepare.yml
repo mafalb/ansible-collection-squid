@@ -9,10 +9,10 @@
     # note that older systemd has no --wait
     # therefore the loop
     #
-    - name: Wait for systemd to complete initialization. # noqa 303
+    - name: Wait for systemd to complete initialization.  # noqa command-instead-of-module
       command: systemctl is-system-running
       register: _has_booted
-      until: _has_booted.stdout in ['running','degraded']
+      until: _has_booted.stdout in ['running', 'degraded']
       retries: 120
       delay: 1
       changed_when: false
