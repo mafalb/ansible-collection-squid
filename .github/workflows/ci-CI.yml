@@ -15,6 +15,13 @@ jobs:
     with:
       targeted_branch: ${{ inputs.targeted_branch }}
 
+  ansiblecollection:
+    needs:
+      - selectbranch
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@main
+    with:
+      targeted_branch: ${{ needs.selectbranch.outputs.ref }}
+
   molecule:
 
     runs-on: ubuntu-20.04
