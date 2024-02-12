@@ -25,13 +25,6 @@
     - role: mafalb.squid.server
       vars:
         squid_package_name: squid-openssl
-  tasks:
-    - name:
-      ansible.builtin.shell: |
-        squid -v | grep "This binary uses OpenSSL"
-
-      ansible.builtin.debug:
-        msg: "{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}"
 
 - name: Converge client
   hosts: ci-client
