@@ -27,4 +27,5 @@ jobs:
     uses: ./.github/workflows/ci-CI.yml
     with:
       targeted_branch: ${{ inputs.targeted_branch }}
+
 ...
