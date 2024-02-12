@@ -23,6 +23,7 @@ jobs:
       - name: Checkout workflows
         uses: actions/checkout@v4
         with:
+          repository: mafalb/workflows
           ref: ${{ needs.selectbranch.outputs.ref }}
           path: workflows
 
