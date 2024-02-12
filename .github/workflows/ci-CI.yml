@@ -10,27 +10,14 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
 
-
   selectbranch:
     uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@main
     with:
       targeted_branch: ${{ inputs.targeted_branch }}
 
-  workflows:
-    runs-on: ubuntu-22.04
-    needs: selectbranch
-    steps:
-      - name: Checkout workflows
-        uses: actions/checkout@v4
-        with:
-          repository: mafalb/workflows
-          ref: ${{ needs.selectbranch.outputs.ref }}
-          path: workflows
-
   ansiblecollection:
-    needs:
-      - selectbranch
-    uses: ./workflows/.github/workflows/reusable-ansiblecollection.yml
+    needs: selectbranch
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@dev
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 
