@@ -44,13 +44,13 @@
     async: 300
     poll: 0
 
-  - name: A request through squid is working
+  - name: A request through squid is working (curl)
     shell: |  # noqa command-instead-of-module
       set -o pipefail
       curl -sv -x http://{{ proxyip_ipv4 }}:3128 https://www.google.at|base64  # make ansible deprecation happy
     changed_when: false
 
-  - name: A request through squid is working
+  - name: A request through squid is working (get_url ansible module)
     environment:
       https_proxy: "{{ proxyip_ipv4 }}:3128"
     get_url:
@@ -58,6 +58,7 @@
       dest: /tmp/null
       mode: '0644'
     changed_when: false
+    check_mode: true  # do also a HEAD request
 
   - name: Debug _async_request
     debug:

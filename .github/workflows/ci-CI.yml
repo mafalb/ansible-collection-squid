@@ -139,6 +139,7 @@ jobs:
       joblist: ${{ toJSON(needs) }}
     needs:
       - selectbranch
+      - ansiblecollection
       - molecule
-
+      - squid-openssl
 ...
