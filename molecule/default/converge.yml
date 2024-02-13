@@ -28,7 +28,7 @@
     - name: A request through squid is working (curl)
       shell: |  # noqa command-instead-of-module
         set -o pipefail
-        curl -sv -x HEAD https://www.google.at/
+        curl -sv --head https://www.google.at/
       changed_when: false
   roles:
     - role: mafalb.squid.server
