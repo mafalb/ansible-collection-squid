@@ -64,6 +64,8 @@ jobs:
         uses: mafalb/workflows/.github/actions/installansible@main
         with:
           extra_packages: 'molecule-plugins[docker,podman],molecule'
+          python_version: 3.11
+          ansible_version: 2.14
           ref: dev  # FIX
 
       - name: Checkout
@@ -133,6 +135,8 @@ jobs:
         uses: mafalb/workflows/.github/actions/installansible@main
         with:
           extra_packages: 'molecule-plugins[docker,podman],molecule'
+          python_version: 3.11
+          ansible_version: 2.14
           ref: dev  # FIX
 
       - name: Checkout
