@@ -21,14 +21,11 @@
 
 - name: Converge server
   hosts: server
-  module_defaults:
-    shell:
-      executable: /bin/bash
   pre_tasks:
     - name: A request through squid is working (curl)
-      shell: |  # noqa command-instead-of-module
-        set -o pipefail
-        curl -sv --head https://www.google.at/
+      when: ansible_os_family == 'Debian'
+      ansible.builtin.command:
+        cmd: curl -sv --head https://www.google.at/
       changed_when: false
   roles:
     - role: mafalb.squid.server
