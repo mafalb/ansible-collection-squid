@@ -92,18 +92,12 @@ jobs:
       - name: Debug
         if: failure()
         working-directory: ${{ env.working-directory }}
-        env:
-          CI_TARGET: ${{ inputs.target }}
-          CI_HOSTNAME: ${{ inputs.hostname }}
-          ENV_FILE: molecule/env-${{ inputs.target }}.yml
         run: |
           podman network ls
           while read n; do
             podman network inspect "$n"
           done < <(podman network ls -q)
-          if test -n "$CI_TARGET"; then
-              source "$ENV_FILE"
-          fi
+          source ".env-$CI_TARGET.yml"
           test -n "$CI_HOSTNAME"
           podman inspect "$CI_HOSTNAME"
           ansible -c podman -i "$CI_HOSTNAME", all -m setup
