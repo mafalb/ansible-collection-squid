@@ -37,7 +37,7 @@
 
 
 - name: Verify that squid was built with gnutls
-  hosts: server
+  hosts: client
   module_defaults:
    shell:
      executable: /bin/bash

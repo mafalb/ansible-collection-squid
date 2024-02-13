@@ -29,7 +29,6 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - arch
           - fedora38
           - fedora39
           - fedora40
@@ -127,7 +126,7 @@ jobs:
         with:
           path: ansible_collections/mafalb/squid
 
-      - name: molecule custom_template scenario
+      - name: molecule squid-openssl
         working-directory: ansible_collections/mafalb/squid
         run: |
           source ~/.virtualenvs/ansible/bin/activate

@@ -35,9 +35,5 @@
   roles:
     # Abuse the "client" for installing the non openssl "default" variant of squid
     - role: mafalb.squid.server
-
-  tasks:
-    - name: Curl is present
-      package:
-        name: curl
+    - role: install_curl  # noqa syntax-check[specific]
 ...
