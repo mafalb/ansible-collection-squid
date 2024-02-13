@@ -103,11 +103,13 @@ jobs:
           done < <(podman network ls -q)
           test -n "$CI_HOSTNAME"
           podman inspect "$CI_HOSTNAME"
+          CI_IMAGE=$(grep CI_IMA .env-debian12.yml | cut -d" " -f2)
+          podman inspect "localhost/molecule_local/$CI_IMAGE"
           ansible -c podman -i "$CI_HOSTNAME", all -m setup
 
   squid-openssl:
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     needs: selectbranch
     strategy:
       fail-fast: false
