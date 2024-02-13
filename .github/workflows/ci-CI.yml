@@ -108,6 +108,12 @@ jobs:
           podman image inspect "$CI_IMAGE"
           ansible -c podman -i "$CI_HOSTNAME", all -m setup
 
+          journalctl --no-pager
+
+          ip=$(podman inspect "$CI_HOSTNAME" | jq '.[0]| .NetworkSettings.Networks."molecule-external".IPAddress')
+          ping -c 10 "$ip"
+
+
   squid-openssl:
 
     runs-on: ubuntu-20.04
