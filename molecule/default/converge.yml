@@ -24,7 +24,7 @@
   pre_tasks:
     - name: A request through squid is working (curl)
       when: ansible_os_family == 'Debian'
-      ansible.builtin.command:
+      ansible.builtin.command:  # noqa command-instead-of-module
         cmd: curl -sv --head https://www.google.at/
       changed_when: false
   roles:
