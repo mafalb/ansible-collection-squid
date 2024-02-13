@@ -75,19 +75,19 @@ jobs:
         working-directory: ansible_collections/mafalb/squid
         run: |
           source ~/.virtualenvs/ansible/bin/activate
-          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test --destroy never
 
       - name: molecule custom_template scenario
         working-directory: ansible_collections/mafalb/squid
         run: |
           source ~/.virtualenvs/ansible/bin/activate
-          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s custom_template
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s custom_template --destroy never
 
       - name: molecule squid_cfg scenario
         working-directory: ansible_collections/mafalb/squid
         run: |
           source ~/.virtualenvs/ansible/bin/activate
-          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s squid_cfg
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s squid_cfg --destroy never
 
       - name: Debug
         if: failure()
