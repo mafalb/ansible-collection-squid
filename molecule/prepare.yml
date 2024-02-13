@@ -7,14 +7,9 @@
   pre_tasks:
     # https://github.com/geerlingguy/ansible-role-composer/issues/54
     # note that older systemd has no --wait
-    # therefore the loop
     #
     - name: Wait for systemd to complete initialization.  # noqa command-instead-of-module
-      command: systemctl is-system-running
-      register: _has_booted
-      until: _has_booted.stdout in ['running', 'degraded']
-      retries: 120
-      delay: 1
+      command: systemctl is-system-running --wait
       changed_when: false
-      failed_when: false
+
 ...

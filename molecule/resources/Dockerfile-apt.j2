@@ -31,5 +31,7 @@ fi
 
 RUN if test -d /lib/systemd/system/sysinit.target.wants/ ; then ln -s /lib/systemd/system/systemd-user-sessions.service /lib/systemd/system/multi-user.target.wants/; fi
 
+RUN mkdir /etc/systemd/system/systemd-tmpfiles-clean.service.d && echo -e "[Service]\nLoadCredential=\n" > /etc/systemd/system/systemd-tmpfiles-clean.service.d/override.conf
+
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/lib/systemd/systemd"]
