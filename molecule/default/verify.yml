@@ -47,7 +47,7 @@
   - name: A request through squid is working (curl)
     shell: |  # noqa command-instead-of-module
       set -o pipefail
-      curl -sv -x http://{{ proxyip_ipv4 }}:3128 https://www.google.at|base64  # make ansible deprecation happy
+      curl -sv --head -x http://{{ proxyip_ipv4 }}:3128 https://www.google.at/
     changed_when: false
 
   - name: A request through squid is working (get_url ansible module)
@@ -58,7 +58,7 @@
       dest: /tmp/null
       mode: '0644'
     changed_when: false
-    check_mode: true  # do also a HEAD request
+    check_mode: true  # makes a HEAD request
 
   - name: Debug _async_request
     debug:
@@ -84,5 +84,4 @@
       # although on a private network - this will lead to a connect timeout
       # and others will fail the DNS lookup - this will lead to rc != 0
       - _result.failed|default(false) or _result.rc != 0
-
 ...

@@ -19,17 +19,8 @@
 
 ---
 
-- name: Converge
-  hosts: all,!ci-client
-  module_defaults:
-    shell:
-      executable: /bin/bash
-  pre_tasks:
-    - name: A request through squid is working (curl)
-      shell: |  # noqa command-instead-of-module
-        set -o pipefail
-        curl -sv -x HEAD https://www.google.at/
-      changed_when: false
+- name: Converge server
+  hosts: server
   roles:
     - role: mafalb.squid.server
 
