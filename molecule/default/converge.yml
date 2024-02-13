@@ -21,12 +21,17 @@
 
 - name: Converge
   hosts: all,!ci-client
+  module_defaults:
+    shell:
+      executable: /bin/bash
+  pre_tasks:
+    - name: A request through squid is working (curl)
+      shell: |  # noqa command-instead-of-module
+        set -o pipefail
+        curl -sv -x HEAD https://www.google.at/
+      changed_when: false
   roles:
     - role: mafalb.squid.server
-  tasks:
-    - name: Debug
-      ansible.builtin.debug:
-        msg: "{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}"
 
 - name: Converge client
   hosts: ci-client
