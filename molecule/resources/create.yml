@@ -142,6 +142,7 @@
         internal: "{{ item.item.internal | default(omit) }}"
         subnet: "{{ item.item.subnet | default(omit) }}"
         executable: "{{ podman_exec }}"
+        gateway: "{{ item.item.gateway | default(omit) }}"
       loop: "{{ podman_network.results }}"
       loop_control:
         label: "{{ item.item.name }}"
