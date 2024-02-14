@@ -17,7 +17,7 @@ jobs:
 
   ansiblecollection:
     needs: selectbranch
-    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@dev
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@main
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 

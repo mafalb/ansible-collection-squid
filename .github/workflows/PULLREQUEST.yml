@@ -13,7 +13,7 @@ jobs:
     uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@main
 
   sanity:
-    uses: mafalb/workflows/.github/workflows/reusable-sanity.yml@dev
+    uses: mafalb/workflows/.github/workflows/reusable-sanity.yml@main
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
     needs: selectbranch
