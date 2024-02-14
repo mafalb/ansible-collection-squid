@@ -21,6 +21,60 @@ jobs:
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 
+  molecule-cgroupv1:
+
+    runs-on: ubuntu-20.04
+    needs: selectbranch
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - centos7
+    env:
+      CI_TARGET: ${{ matrix.target }}
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+
+      - name: Checkout workflows
+        uses: actions/checkout@v4
+        with:
+          repository: mafalb/workflows
+          path: workflows
+          ref: ${{ needs.selectbranch.outputs.ref }}
+
+      - name: Install Ansible
+        uses: mafalb/workflows/.github/actions/installansible@main
+        with:
+          extra_packages: 'molecule-plugins[docker],molecule'
+          python_version: 3.11
+          ansible_version: 2.16
+          ref: dev  # FIX
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/mafalb/squid
+
+      - name: molecule default scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule-docker.yml -e ".env-$CI_TARGET.yml" test --destroy never
+
+      - name: molecule custom_template scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule-docker.yml -e ".env-$CI_TARGET.yml" test -s custom_template --destroy never
+
+      - name: molecule squid_cfg scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule-docker.yml -e ".env-$CI_TARGET.yml" test -s squid_cfg --destroy never
+
   molecule:
 
     runs-on: ubuntu-22.04
