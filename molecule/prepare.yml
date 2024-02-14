@@ -3,7 +3,7 @@
 # see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
 ---
 - name: Prepare
-  hosts: all
+  hosts: server,!ci-centos7
   pre_tasks:
     # https://github.com/geerlingguy/ansible-role-composer/issues/54
     # note that older systemd has no --wait
