@@ -1,0 +1,28 @@
+# Copyright (c) Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
+---
+
+name: Pullrequest
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+
+jobs:
+
+  selectbranch:
+    uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@main
+
+  sanity:
+    uses: mafalb/workflows/.github/workflows/reusable-sanity.yml@dev
+    with:
+      targeted_branch: ${{ needs.selectbranch.outputs.ref }}
+    needs: selectbranch
+
+  allsuccess:
+    if: success() || failure()
+    uses: mafalb/workflows/.github/workflows/reusable-allsuccess.yml@main
+    with:
+      joblist: ${{ toJSON(needs) }}
+    needs:
+      - selectbranch
+      - sanity
