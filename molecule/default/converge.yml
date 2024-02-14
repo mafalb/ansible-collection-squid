@@ -49,8 +49,8 @@
 - name: Converge client
   hosts: client_group
   environment:
-    http_proxy: "{{ proxy_ipv4 }}:3128"
-    https_proxy: "{{ proxy_ipv4 }}:3128"
+    http_proxy: "http://{{ proxy_ipv4 }}:3128"
+    https_proxy: "http://{{ proxy_ipv4 }}:3128"
   roles:
     - role: install_curl  # noqa syntax-check[specific]
 ...

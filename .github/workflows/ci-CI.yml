@@ -150,31 +150,6 @@ jobs:
           source ~/.virtualenvs/ansible/bin/activate
           molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s squid_cfg --destroy never
 
-      - name: Debug
-        if: failure() || success()
-        working-directory: ansible_collections/mafalb/squid
-        env:
-          CI_HOSTNAME: ci-${{ matrix.target }}
-        run: |
-          podman network ls
-          while read n; do
-            echo network "$n"
-            podman network inspect "$n"
-          done < <(podman network ls -q)
-          test -n "$CI_HOSTNAME"
-          echo inspect "$CI_HOSTNAME"
-          podman inspect "$CI_HOSTNAME"
-          CI_IMAGE=$(grep ^CI_IMA ".env-$CI_TARGET.yml" | cut -d" " -f2)
-          echo inspect image "localhost/molecule_local/$CI_IMAGE"
-          podman image inspect "localhost/molecule_local/$CI_IMAGE"
-          echo inspect image "$CI_IMAGE"
-          podman image inspect "$CI_IMAGE"
-          echo ansible facts
-          ansible -c podman -i "$CI_HOSTNAME", all -m setup
-
-          echo journalctl
-          journalctl --no-pager
-
   squid-openssl:
 
     runs-on: ubuntu-22.04
