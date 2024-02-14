@@ -29,11 +29,6 @@
     - name: Debug network settings
       ansible.builtin.debug:
         var: route.stdout
-    - name: A request through squid is working (curl)
-      when: ansible_os_family == 'Debian'
-      ansible.builtin.command:  # noqa command-instead-of-module
-        cmd: curl -sv --head https://www.google.at/
-      changed_when: false
   roles:
     - role: mafalb.squid.server
 

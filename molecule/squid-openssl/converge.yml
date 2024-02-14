@@ -46,6 +46,6 @@
     https_proxy: "http://{{ proxy_ipv4 }}:3128"
   roles:
     # Abuse the "client" for installing the non openssl "default" variant of squid
-    - role: mafalb.squid.server
     - role: install_curl  # noqa syntax-check[specific]
+    - role: mafalb.squid.server
 ...
