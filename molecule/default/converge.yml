@@ -22,11 +22,15 @@
 - name: Converge server
   hosts: server
   pre_tasks:
-    - name: Debug network settings
+    - name: Register network settings
       ansible.builtin.shell: |
           /usr/sbin/ip a
           /usr/sbin/ip ro
+      register: ip
       changed_when: false
+    - name: Debug network settings
+      ansible.builtin.debug:
+        var: ip.stdout
     - name: A request through squid is working (curl)
       when: ansible_os_family == 'Debian'
       ansible.builtin.command:  # noqa command-instead-of-module
