@@ -92,7 +92,7 @@ jobs:
           molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s squid_cfg --destroy never
 
       - name: Debug
-        if: failure()
+        if: failure() || success()
         working-directory: ansible_collections/mafalb/squid
         env:
           CI_HOSTNAME: ci-${{ matrix.target }}
