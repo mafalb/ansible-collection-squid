@@ -23,10 +23,10 @@
   hosts: server
   pre_tasks:
     - name: Debug network settings
-      ansible.builtin.command:
-        shell: |
+      ansible.builtin.shell: |
           /usr/sbin/ip a
           /usr/sbin/ip ro
+      changed_when: false
     - name: A request through squid is working (curl)
       when: ansible_os_family == 'Debian'
       ansible.builtin.command:  # noqa command-instead-of-module
