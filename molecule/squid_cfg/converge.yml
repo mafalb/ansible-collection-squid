@@ -20,7 +20,7 @@
 ---
 
 - name: Converge
-  hosts: all,!ci-client
+  hosts: server_group
   roles:
   - role: mafalb.squid.server
     squid_cfg_template: squid.conf.j2
@@ -36,11 +36,20 @@
       - deny all
       shutdown_lifetime: 30 seconds # that i have something to grep in CI
 
+- name: Converge client (Get Proxy IP)
+  hosts: client_group
+  pre_tasks:
+    - name: Register proxy IP
+      ansible.builtin.command:
+        cmd: cat /proxyipv4.txt
+      register: proxy_ipv4
+      changed_when: false
+
 - name: Converge client
-  hosts: ci-client
+  hosts: client_group
   environment:
-    http_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
-    https_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+    http_proxy: "{{ proxy_ipv4 }}:3128"
+    https_proxy: "{{ proxy_ipv4 }}:3128"
   roles:
     - role: install_curl  # noqa syntax-check[specific]
 ...

@@ -20,7 +20,7 @@
 ---
 
 - name: Converge server
-  hosts: server
+  hosts: server_group
   pre_tasks:
     - name: Register network settings
       ansible.builtin.command: cat /proc/net/route
@@ -38,14 +38,19 @@
     - role: mafalb.squid.server
 
 - name: Converge client
-  hosts: ci-client
-  environment:
-    http_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
-    https_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+  hosts: client_group
   pre_tasks:
-    - name: Debug proxy
-      ansible.builtin.debug:
-        msg: "{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}"
+    - name: Register proxy IP
+      ansible.builtin.command:
+        cmd: cat /proxyipv4.txt
+      register: proxy_ipv4
+      changed_when: false
+
+- name: Converge client
+  hosts: client_group
+  environment:
+    http_proxy: "{{ proxy_ipv4 }}:3128"
+    https_proxy: "{{ proxy_ipv4 }}:3128"
   roles:
     - role: install_curl  # noqa syntax-check[specific]
 ...

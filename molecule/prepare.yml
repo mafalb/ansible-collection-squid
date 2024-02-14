@@ -2,8 +2,8 @@
 # GNU General Public License v3.0+
 # see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
 ---
-- name: Prepare
-  hosts: server,!ci-centos7
+- name: Prepare servers
+  hosts: server_group,!ci-centos7
   pre_tasks:
     # https://github.com/geerlingguy/ansible-role-composer/issues/54
     # note that older systemd has no --wait
@@ -11,5 +11,43 @@
     - name: Wait for systemd to complete initialization.  # noqa command-instead-of-module
       command: systemctl is-system-running --wait
       changed_when: false
+
+- name: Prepare clients
+  hosts: client_group
+
+  tasks:
+
+    - name: Get podman network information
+      delegate_to: localhost
+      containers.podman.podman_network_info:
+        name: molecule-internal
+      register: __network
+
+    - name: Debug network
+      ansible.builtin.debug:
+        var: __network.networks[0].subnets[0]
+
+    - name: Debug network
+      ansible.builtin.debug:
+        var: hostvars[groups['server_group'][0]]['ansible_%s' | format(item)].ipv4.network
+      loop: "{{ hostvars[groups['server_group'][0]].ansible_interfaces }}"
+
+    - name: Get matching local interface
+      when: hostvars[groups['server_group'][0]]['ansible_%s' | format(item)].ipv4.network + '/24' == __network.networks[0].subnets[0].subnet
+      ansible.builtin.copy:
+        content: "{{ hostvars[groups['server_group'][0]]['ansible_%s' | format(item)].ipv4.address }}"
+        dest: /proxyipv4.txt
+        mode: '0444'
+      loop: "{{ hostvars[groups['server_group'][0]].ansible_interfaces }}"
+
+    - name: Register proxy IP
+      ansible.builtin.command:
+        cmd: cat /proxyipv4.txt
+      register: proxy_ipv4
+      changed_when: false
+
+    - name: Assert we have a proxy IP
+      ansible.builtin.assert:
+        that: proxy_ipv4.stdout | length > 0
 
 ...

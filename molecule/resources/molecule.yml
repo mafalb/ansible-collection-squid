@@ -49,7 +49,7 @@ platforms:
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   systemd: true
   groups:
-  - server
+    - server_group
 
 - name: ci-client
   image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
@@ -65,7 +65,7 @@ platforms:
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   systemd: true
   groups:
-  - client_group
+    - client_group
 
 provisioner:
   name: ansible
