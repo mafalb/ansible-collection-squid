@@ -21,6 +21,12 @@ jobs:
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 
+  # CentOS systemd container does not run on Ubuntu 22
+  # Test it on Ubuntu 20
+  #
+  # On the old podman there are 2 default routes created.
+  # But with CentOS 7 it is working so far. We'll see.
+  #
   molecule-cgroupv1:
 
     runs-on: ubuntu-20.04
