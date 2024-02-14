@@ -39,6 +39,8 @@
 
 - name: Converge client
   hosts: client_group
+  vars:
+    proxy_ipv4: "{{ proxy_ipv4.stdout }}"
   environment:
     http_proxy: "http://{{ proxy_ipv4 }}:3128"
     https_proxy: "http://{{ proxy_ipv4 }}:3128"
