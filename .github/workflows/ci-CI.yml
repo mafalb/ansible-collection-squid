@@ -164,7 +164,7 @@ jobs:
           test -n "$CI_HOSTNAME"
           echo inspect "$CI_HOSTNAME"
           podman inspect "$CI_HOSTNAME"
-          CI_IMAGE=$(grep CI_IMA ".env-$CI_TARGET.yml" | cut -d" " -f2)
+          CI_IMAGE=$(grep ^CI_IMA ".env-$CI_TARGET.yml" | cut -d" " -f2)
           echo inspect image "localhost/molecule_local/$CI_IMAGE"
           podman image inspect "localhost/molecule_local/$CI_IMAGE"
           echo inspect image "$CI_IMAGE"
