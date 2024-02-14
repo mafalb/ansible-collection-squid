@@ -39,11 +39,9 @@
 
 - name: Converge client
   hosts: client_group
-  vars:
-    proxy_ipv4: "{{ proxy_ipv4.stdout }}"
   environment:
-    http_proxy: "http://{{ proxy_ipv4 }}:3128"
-    https_proxy: "http://{{ proxy_ipv4 }}:3128"
+    http_proxy: "http://{{ proxy_ipv4.stdout }}:3128"
+    https_proxy: "http://{{ proxy_ipv4.stdout }}:3128"
   roles:
     # Abuse the "client" for installing the non openssl "default" variant of squid
     - role: install_curl  # noqa syntax-check[specific]
