@@ -11,13 +11,13 @@ on:  # yamllint disable-line rule:truthy
 jobs:
 
   selectbranch:
-    uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@main
+    uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@prod
     with:
       targeted_branch: ${{ inputs.targeted_branch }}
 
   ansiblecollection:
     needs: selectbranch
-    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@main
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@prod
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 
@@ -51,7 +51,7 @@ jobs:
           ref: ${{ needs.selectbranch.outputs.ref }}
 
       - name: Install Ansible
-        uses: mafalb/workflows/.github/actions/installansible@main
+        uses: mafalb/workflows/.github/actions/installansible@prod
         with:
           extra_packages: 'molecule-plugins[podman],molecule'
           python_version: 3.11
@@ -120,7 +120,7 @@ jobs:
           ref: ${{ needs.selectbranch.outputs.ref }}
 
       - name: Install Ansible
-        uses: mafalb/workflows/.github/actions/installansible@main
+        uses: mafalb/workflows/.github/actions/installansible@prod
         with:
           extra_packages: 'molecule-plugins[podman],molecule'
           python_version: 3.11
@@ -177,7 +177,7 @@ jobs:
           ref: ${{ needs.selectbranch.outputs.ref }}
 
       - name: Install Ansible
-        uses: mafalb/workflows/.github/actions/installansible@main
+        uses: mafalb/workflows/.github/actions/installansible@prod
         with:
           extra_packages: 'molecule-plugins[podman],molecule'
           python_version: 3.11
@@ -197,7 +197,7 @@ jobs:
 
   allsuccess:
     if: success() || failure()
-    uses: mafalb/workflows/.github/workflows/reusable-allsuccess.yml@main
+    uses: mafalb/workflows/.github/workflows/reusable-allsuccess.yml@prod
     with:
       joblist: ${{ toJSON(needs) }}
     needs:
