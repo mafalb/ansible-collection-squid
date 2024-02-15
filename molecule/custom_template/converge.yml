@@ -3,7 +3,7 @@
 # This file is part of ansible-collection-squid
 # Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
 #
-# ansible-collection-squid is free software: you can redistribute it 
+# ansible-collection-squid is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
@@ -16,23 +16,31 @@
 # You should have received a copy of the GNU General Public License
 # along with ansible-collection-squid.
 # If not, see <https://www.gnu.org/licenses/>.
-
 ---
 
-- name: Converge
-  hosts: all,!ci-client
+- name: Converge server
+  hosts: server_group
   roles:
   - role: mafalb.squid.server
     squid_cfg_template: squid.conf.j2
 
-- name: Converge client
-  hosts: ci-client
-  environment:
-    http_proxy: http://{{ groups['server'][0] }}:3128
-    https_proxy: http://{{ groups['server'][0] }}:3128
-  tasks:
-  - name: curl is present
-    package:
-      name: curl
 
+- name: Converge client (Set Proxy IP)
+  hosts: client_group
+  pre_tasks:
+    - name: Register proxy IP
+      ansible.builtin.command:
+        cmd: cat /proxyipv4.txt
+      register: proxy_ipv4
+      changed_when: false
+
+
+- name: Converge client
+  hosts: client_group
+  environment:
+    # Do not rely on dns resolution working, use ip addresses
+    http_proxy: "http://{{ proxy_ipv4.stdout }}:3128"
+    https_proxy: "http://{{ proxy_ipv4.stdout }}:3128"
+  roles:
+    - role: install_curl # noqa syntax-check[specific]
 ...

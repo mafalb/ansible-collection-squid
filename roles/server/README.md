@@ -62,7 +62,7 @@ squid_state: present  # present|absent
 Specify your own template for squid.conf instead of the default
 
 ```yaml
-squid_cfg_template: squid.conf.j2   
+squid_cfg_template: squid.conf.j2
 ```
 
 ---

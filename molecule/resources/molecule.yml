@@ -1,0 +1,83 @@
+# vim: set ft=yaml ts=2 expandtab:
+
+# This file is part of ansible-collection-squid
+# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
+#
+# ansible-collection-squid is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# ansible-collection-squid is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ansible-collection-squid.
+# If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+
+driver:
+  name: podman
+
+platforms:
+- name: ${CI_HOSTNAME}
+  image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
+  dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
+  command: /lib/systemd/systemd
+  security_opts:
+    - seccomp=unconfined
+  networks:
+    - name: molecule-external
+    - name: molecule-internal
+      internal: true
+  network:
+    - molecule-external
+    - molecule-internal
+  volumes:
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  capabilities:
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  systemd: true
+  groups:
+    - server_group
+
+- name: ci-client
+  image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
+  dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
+  command: /lib/systemd/systemd
+  network:
+    - molecule-internal
+  volumes:
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  capabilities:
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  systemd: true
+  groups:
+    - client_group
+
+provisioner:
+  name: ansible
+  ansible_args:
+    - --tags=all,debug
+    - --diff
+  config_options:
+    defaults:
+      gathering: smart
+      interpreter_python: auto
+
+verifier:
+  name: ansible
+
+...

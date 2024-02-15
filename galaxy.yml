@@ -3,7 +3,7 @@
 # This file is part of ansible-collection-squid
 # Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
 #
-# ansible-collection-squid is free software: you can redistribute it 
+# ansible-collection-squid is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
@@ -21,7 +21,7 @@
 
 namespace: mafalb
 name: squid
-version: 0.2.1
+version: 0.3.0
 readme: README.md
 
 authors:
@@ -33,8 +33,11 @@ license:
 - GPL-3.0-or-later
 
 tags:
-- squid
-- proxy
+  - squid
+  - proxy
+  - linux
+  - networking
+  - infrastructure
 
 dependencies: {}
 

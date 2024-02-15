@@ -3,7 +3,7 @@
 # This file is part of ansible-collection-squid
 # Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
 #
-# ansible-collection-squid is free software: you can redistribute it 
+# ansible-collection-squid is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
@@ -19,19 +19,33 @@
 
 ---
 
-- name: Converge
-  hosts: all,!ci-client
+- name: Converge server
+  hosts: server_group
+  pre_tasks:
+    - name: Register network settings
+      ansible.builtin.command: cat /proc/net/route
+      register: route
+      changed_when: false
+    - name: Debug network settings
+      ansible.builtin.debug:
+        var: route.stdout
   roles:
-  - role: mafalb.squid.server
+    - role: mafalb.squid.server
 
 - name: Converge client
-  hosts: ci-client
-  environment:
-    http_proxy: http://{{ groups['server'][0] }}:3128
-    https_proxy: http://{{ groups['server'][0] }}:3128
+  hosts: client_group
+  pre_tasks:
+    - name: Register proxy IP
+      ansible.builtin.command:
+        cmd: cat /proxyipv4.txt
+      register: proxy_ipv4
+      changed_when: false
 
-  tasks:
-  - name: curl is present
-    package:
-      name: curl
+- name: Converge client
+  hosts: client_group
+  environment:
+    http_proxy: "http://{{ proxy_ipv4.stdout }}:3128"
+    https_proxy: "http://{{ proxy_ipv4.stdout }}:3128"
+  roles:
+    - role: install_curl  # noqa syntax-check[specific]
 ...

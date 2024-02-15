@@ -1,0 +1,44 @@
+# Copyright (c) 2022 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
+---
+- name: Prepare servers
+  hosts: server_group
+  pre_tasks:
+    # https://github.com/geerlingguy/ansible-role-composer/issues/54
+    # note that older systemd has no --wait
+    #
+    - name: Wait for systemd to complete initialization.  # noqa command-instead-of-module
+      when: ansible_pkg_mgr != 'yum'  # i.e. very old
+      command: systemctl is-system-running --wait
+      changed_when: false
+
+- name: Prepare clients
+  hosts: client_group
+
+  tasks:
+
+    - name: Debug network
+      ansible.builtin.debug:
+        var: hostvars[groups['server_group'][0]]['ansible_%s' | format(item)]
+      loop: "{{ hostvars[groups['server_group'][0]].ansible_interfaces }}"
+
+    - name: Get matching interface
+      when: hostvars[groups['server_group'][0]]['ansible_%s' | format(item)].ipv4.network == ansible_eth0.ipv4.network | default('')
+      ansible.builtin.copy:
+        content: "{{ hostvars[groups['server_group'][0]]['ansible_%s' | format(item)].ipv4.address }}"
+        dest: /proxyipv4.txt
+        mode: '0444'
+      loop: "{{ hostvars[groups['server_group'][0]].ansible_interfaces }}"
+
+    - name: Register proxy IP
+      ansible.builtin.command:
+        cmd: cat /proxyipv4.txt
+      register: proxy_ipv4
+      changed_when: false
+
+    - name: Assert we have a proxy IP
+      ansible.builtin.assert:
+        that: proxy_ipv4.stdout | length > 0
+
+...

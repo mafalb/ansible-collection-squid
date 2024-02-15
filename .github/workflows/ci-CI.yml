@@ -1,0 +1,208 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+name: CI
+on:  # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      targeted_branch:
+        type: string
+
+jobs:
+
+  selectbranch:
+    uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@main
+    with:
+      targeted_branch: ${{ inputs.targeted_branch }}
+
+  ansiblecollection:
+    needs: selectbranch
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@main
+    with:
+      targeted_branch: ${{ needs.selectbranch.outputs.ref }}
+
+  # CentOS systemd container does not run on Ubuntu 22
+  # Test it on Ubuntu 20
+  #
+  # On the old podman there are 2 default routes created.
+  # But with CentOS 7 it is working so far. We'll see.
+  #
+  molecule-cgroupv1:
+
+    runs-on: ubuntu-20.04
+    needs: selectbranch
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - centos7
+    env:
+      CI_TARGET: ${{ matrix.target }}
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+
+      - name: Checkout workflows
+        uses: actions/checkout@v4
+        with:
+          repository: mafalb/workflows
+          path: workflows
+          ref: ${{ needs.selectbranch.outputs.ref }}
+
+      - name: Install Ansible
+        uses: mafalb/workflows/.github/actions/installansible@main
+        with:
+          extra_packages: 'molecule-plugins[podman],molecule'
+          python_version: 3.11
+          ansible_version: 2.16
+          ref: dev  # FIX
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/mafalb/squid
+
+      - name: molecule default scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test --destroy never
+
+      - name: molecule custom_template scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s custom_template --destroy never
+
+      - name: molecule squid_cfg scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s squid_cfg --destroy never
+
+  molecule:
+
+    runs-on: ubuntu-22.04
+    needs: selectbranch
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - fedora38
+          - fedora39
+          - fedora40
+          - c8s
+          - c9s
+          - alma8
+          - alma9
+          - rocky8
+          - rocky9
+          - debian10
+          - debian11
+          - debian12
+          - ubuntu18
+          - ubuntu20
+          - ubuntu22
+          - ubuntu24
+    env:
+      CI_TARGET: ${{ matrix.target }}
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+
+      - name: Checkout workflows
+        uses: actions/checkout@v4
+        with:
+          repository: mafalb/workflows
+          path: workflows
+          ref: ${{ needs.selectbranch.outputs.ref }}
+
+      - name: Install Ansible
+        uses: mafalb/workflows/.github/actions/installansible@main
+        with:
+          extra_packages: 'molecule-plugins[podman],molecule'
+          python_version: 3.11
+          ansible_version: 2.16
+          ref: dev  # FIX
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/mafalb/squid
+
+      - name: molecule default scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test --destroy never
+
+      - name: molecule custom_template scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s custom_template --destroy never
+
+      - name: molecule squid_cfg scenario
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s squid_cfg --destroy never
+
+  squid-openssl:
+
+    runs-on: ubuntu-22.04
+    needs: selectbranch
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - debian11
+          - debian12
+          - ubuntu22
+          - ubuntu24
+    env:
+      CI_TARGET: ${{ matrix.target }}
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
+    steps:
+
+      - name: Checkout workflows
+        uses: actions/checkout@v4
+        with:
+          repository: mafalb/workflows
+          path: workflows
+          ref: ${{ needs.selectbranch.outputs.ref }}
+
+      - name: Install Ansible
+        uses: mafalb/workflows/.github/actions/installansible@main
+        with:
+          extra_packages: 'molecule-plugins[podman],molecule'
+          python_version: 3.11
+          ansible_version: 2.16
+          ref: dev  # FIX
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/mafalb/squid
+
+      - name: molecule squid-openssl
+        working-directory: ansible_collections/mafalb/squid
+        run: |
+          source ~/.virtualenvs/ansible/bin/activate
+          molecule -c molecule/resources/molecule.yml -e ".env-$CI_TARGET.yml" test -s squid-openssl
+
+  allsuccess:
+    if: success() || failure()
+    uses: mafalb/workflows/.github/workflows/reusable-allsuccess.yml@main
+    with:
+      joblist: ${{ toJSON(needs) }}
+    needs:
+      - selectbranch
+      - ansiblecollection
+      - molecule
+      - squid-openssl
+...

@@ -3,7 +3,7 @@
 # This file is part of ansible-collection-squid
 # Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
 #
-# ansible-collection-squid is free software: you can redistribute it 
+# ansible-collection-squid is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
@@ -19,36 +19,60 @@
 
 ---
 
+# http_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+# https_proxy: http://{{ hostvars[groups['server'][0]].ansible_eth1.ipv4.address }}:3128
+
+- name: Get Facts
+  hosts: server_group
+
 - name: Verify
-  hosts: ci-client
+  hosts: client_group
+  pre_tasks:
+    - name: Register proxy IP
+      ansible.builtin.command:
+        cmd: cat /proxyipv4.txt
+      register: proxyipv4
+      changed_when: false
+
+- name: Verify
+  hosts: client_group
+  module_defaults:
+   shell:
+     executable: /bin/bash
+  vars:
+    proxyip_ipv4: "{{ proxyipv4.stdout }}"
   tasks:
 
-  - name: request without proxy - start
-    command: curl -sv -x '' https://www.google.at
-    args:
-      warn: false
+  - name: Make a request without proxy - start
+    command:  # noqa command-instead-of-module
+      cmd: curl -sv -x '' https://www.google.at
     changed_when: false
     register: _async_request
     async: 300
     poll: 0
 
-  - name: request through squid is working
-    command: curl -sv -x http://{{ groups['server'][0] }}:3128 https://www.google.at
+  - name: A request through squid is working (curl)
+    shell: |  # noqa command-instead-of-module
+      set -o pipefail
+      curl -sv --head -x http://{{ proxyip_ipv4 }}:3128 https://www.google.at/
     changed_when: false
-    args:
-      warn: false
 
-  - name: request through squid is working
+  - name: A request through squid is working (get_url ansible module)
+    environment:
+      https_proxy: "https://{{ proxyip_ipv4 }}:3128"
+      http_proxy: "http://{{ proxyip_ipv4 }}:3128"
     get_url:
       url: https://www.google.at/
-      dest: /dev/null
-    environment:
-      https_proxy: "{{ groups['server'][0] }}:3128"
+      dest: /tmp/null
+      mode: '0644'
+    changed_when: false
+    check_mode: true  # makes a HEAD request
 
-  - name: debug _async_request
-    debug: var=_async_request
+  - name: Debug _async_request
+    debug:
+      var: _async_request
 
-  - name: request without proxy - wait for timeout
+  - name: A request without proxy - wait for timeout
     delegate_to: ci-client
     async_status:
       jid: "{{ _async_request.ansible_job_id }}"
@@ -57,15 +81,15 @@
     retries: 10
     failed_when: false
 
-  - name: debug _result
-    debug: var=_result
+  - name: Debug _result
+    debug:
+      var: _result
 
-  - name: request without proxy - failed
+  - name: A request without proxy - failed
     assert:
       that:
       # some containers (maybe on older docker versions?) can resolve DNS
       # although on a private network - this will lead to a connect timeout
       # and others will fail the DNS lookup - this will lead to rc != 0
       - _result.failed|default(false) or _result.rc != 0
-
 ...

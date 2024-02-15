@@ -1,0 +1,38 @@
+
+{% if item.registry is defined %}
+FROM {{ item.registry.url }}/{{ item.image }}
+{% else %}
+FROM {{ item.image }}
+{% endif %}
+
+STOPSIGNAL SIGRTMIN+3
+
+ENV container docker
+
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
+{% if item.env is defined %}
+{% for var, value in item.env.items() %}
+{% if value %}
+ENV {{ var }} {{ value }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+RUN yum makecache fast && yum install -y systemd python sudo yum-plugin-ovl bash iproute && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf && yum clean all
+
+RUN if test -d /lib/systemd/system/sysinit.target.wants/ ; then (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done);\
+ rm -f /lib/systemd/system/multi-user.target.wants/*;\
+ rm -f /etc/systemd/system/*.wants/*;\
+ rm -f /lib/systemd/system/local-fs.target.wants/*;\
+ rm -f /lib/systemd/system/sockets.target.wants/*udev*;\
+ rm -f /lib/systemd/system/sockets.target.wants/*initctl*;\
+ rm -f /lib/systemd/system/basic.target.wants/*;\
+ rm -f /lib/systemd/system/anaconda.target.wants/*;\
+fi
+
+RUN if test -d /lib/systemd/system/sysinit.target.wants/ ; then ln -s /lib/systemd/system/systemd-user-sessions.service /lib/systemd/system/multi-user.target.wants/; fi
+
+VOLUME [ "/sys/fs/cgroup" ]
+CMD ["/lib/systemd/systemd"]

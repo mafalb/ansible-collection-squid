@@ -1,0 +1,13 @@
+---
+# On some systems there are curl-minimal alternative packages
+# Sometimes pre-installed.
+# Only install curl if not already present.
+#
+- name: Check for curl, only install if not present yet
+  ansible.builtin.command:  # noqa command-instead-of-module
+    cmd: curl --version
+  register: __curl
+  failed_when: false
+  changed_when: __curl.rc != 0
+  notify: Install curl
+...
