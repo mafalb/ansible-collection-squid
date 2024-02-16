@@ -41,6 +41,8 @@ platforms:
   network:
     - molecule-external
     - molecule-internal
+  volumes:
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   capabilities:
     - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
