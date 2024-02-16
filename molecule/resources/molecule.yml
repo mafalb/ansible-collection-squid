@@ -47,7 +47,7 @@ platforms:
     - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
-  systemd: true
+  systemd: always
   groups:
     - server_group
 
@@ -63,7 +63,7 @@ platforms:
     - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
-  systemd: true
+  systemd: always
   groups:
     - client_group
 
