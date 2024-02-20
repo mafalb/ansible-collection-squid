@@ -106,10 +106,11 @@ jobs:
           - ubuntu24
 
     uses: mafalb/workflows/.github/workflows/reusable-molecule.yml@f-dev  # FIX
+    name: molecule ${{ matrix.target }}
     with:
-      targeted_branch: ${{ needs.selectbranch.outputs.ref }}
-      scenarios: "default, custom_template, squid_cfg"
       target: ${{ matrix.target }}
+      scenarios: "default, custom_template, squid_cfg"
+      targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 
   squid-openssl:
 
