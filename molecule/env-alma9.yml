@@ -1,6 +1,5 @@
 ---
-#CI_IMAGE: quay.io/almalinux/almalinux:9
-CI_IMAGE: docker.io/almalinux:9
+CI_IMAGE: quay.io/almalinuxorg/almalinux:9
 CI_HOSTNAME: ci-alma9
 CI_DOCKERFILE: Dockerfile-dnf.j2
 ...
