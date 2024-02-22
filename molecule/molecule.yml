@@ -22,7 +22,7 @@
 dependency:
   name: galaxy
   options:
-    requirements-file: requirements.yml
+    requirements-file: molecule/requirements.yml
 
 driver:
   name: podman
@@ -30,7 +30,7 @@ driver:
 platforms:
 - name: ${CI_HOSTNAME}
   image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
-  dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
+  dockerfile: ../${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
   security_opts:
     - seccomp=unconfined
@@ -53,7 +53,7 @@ platforms:
 
 - name: ci-client
   image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
-  dockerfile: ../resources/${CI_DOCKERFILE:-Dockerfile.j2}
+  dockerfile: ../${CI_DOCKERFILE:-Dockerfile.j2}
   command: /lib/systemd/systemd
   network:
     - molecule-internal
@@ -72,10 +72,14 @@ provisioner:
   ansible_args:
     - --tags=all,debug
     - --diff
+  env:
+    # pick up CI-only roles
+    ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/molecule/default/roles
   config_options:
     defaults:
       gathering: smart
       interpreter_python: auto
+      roles_path: molecule/default/roles:../default/roles:default/roles
 
 verifier:
   name: ansible
