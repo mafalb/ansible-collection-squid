@@ -17,7 +17,7 @@ jobs:
 
   ansiblecollection:
     needs: selectbranch
-    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@f-dev
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@dev
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 
@@ -105,7 +105,7 @@ jobs:
           - ubuntu22
           - ubuntu24
 
-    uses: mafalb/workflows/.github/workflows/reusable-molecule.yml@f-dev  # FIX
+    uses: mafalb/workflows/.github/workflows/reusable-molecule.yml@dev
     name: molecule ${{ matrix.target }}
     with:
       target: ${{ matrix.target }}
@@ -122,7 +122,7 @@ jobs:
           - debian12
           - ubuntu22
           - ubuntu24
-    uses: mafalb/workflows/.github/workflows/reusable-molecule.yml@f-dev  # FIX
+    uses: mafalb/workflows/.github/workflows/reusable-molecule.yml@dev
     with:
       target: ${{ matrix.target }}
       scenarios: "squid-openssl"
