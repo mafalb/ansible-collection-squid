@@ -11,13 +11,13 @@ on:  # yamllint disable-line rule:truthy
 jobs:
 
   selectbranch:
-    uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@f-dev
+    uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@prod
     with:
       targeted_branch: ${{ inputs.targeted_branch }}
 
   ansiblecollection:
     needs: selectbranch
-    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@prod
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@f-dev
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
 
