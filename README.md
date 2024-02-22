@@ -2,7 +2,7 @@
 
 |||
 |---|---|
-|master|![master branch](https://github.com/mafalb/ansible-collection-squid/workflows/CI/badge.svg?branch=master)|
+|prod|![prod branch](https://github.com/mafalb/ansible-collection-squid/workflows/CI/badge.svg?branch=prod)|
 |dev|![dev branch](https://github.com/mafalb/ansible-collection-squid/workflows/CI/badge.svg?branch=dev)|
 
 An ansible collection for squid.
