@@ -122,8 +122,9 @@ jobs:
           - debian12
           - ubuntu22
           - ubuntu24
-    uses: mafalb/workflows/.github/workflows/reusable-molecule.yml@prod
+    uses: mafalb/workflows/.github/workflows/reusable-molecule.yml@dev
     with:
+      name: squid-openssl
       target: ${{ matrix.target }}
       scenarios: "squid-openssl"
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
