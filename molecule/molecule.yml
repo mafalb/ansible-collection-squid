@@ -41,8 +41,6 @@ platforms:
   network:
     - molecule-external
     - molecule-internal
-  tmpfs:
-    /run: rw
   volumes:
     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   capabilities:
